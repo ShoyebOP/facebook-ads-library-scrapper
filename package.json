@@ -1,0 +1,14 @@
+{
+  "name": "facebook-ads-library-scrapper",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "Facebook Ads Library profile URL scraper using Cloak browser",
+  "main": "scraper.js",
+  "scripts": {
+    "start": "bun scraper.js"
+  },
+  "dependencies": {
+    "cloakbrowser": "^0.3.28",
+    "playwright-core": "^1.53.0"
+  }
+}
