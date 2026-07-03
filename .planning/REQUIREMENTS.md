@@ -118,6 +118,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SETUP-04 | Phase 1 | Pending |
 | SETUP-05 | Phase 1 | Pending |
 | SETUP-06 | Phase 1 | Pending |
+| CONFIG-01 | Phase 1 | Pending |
+| CONFIG-02 | Phase 1 | Pending |
+| CONFIG-03 | Phase 1 | Pending |
+| CONFIG-04 | Phase 1 | Pending |
+| CONFIG-05 | Phase 1 | Pending |
 | SCRAPE-01 | Phase 2 | Pending |
 | SCRAPE-02 | Phase 2 | Pending |
 | SCRAPE-03 | Phase 2 | Pending |
@@ -128,38 +133,33 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCRAPE-08 | Phase 2 | Pending |
 | SCRAPE-09 | Phase 2 | Pending |
 | SCRAPE-10 | Phase 2 | Pending |
-| CONFIG-01 | Phase 3 | Pending |
-| CONFIG-02 | Phase 3 | Pending |
-| CONFIG-03 | Phase 3 | Pending |
-| CONFIG-04 | Phase 3 | Pending |
-| CONFIG-05 | Phase 3 | Pending |
-| OUTPUT-01 | Phase 4 | Pending |
-| OUTPUT-02 | Phase 4 | Pending |
-| OUTPUT-03 | Phase 4 | Pending |
-| WEBHOOK-01 | Phase 4 | Pending |
-| WEBHOOK-02 | Phase 4 | Pending |
-| WEBHOOK-03 | Phase 4 | Pending |
-| DAEMON-01 | Phase 5 | Pending |
-| DAEMON-02 | Phase 5 | Pending |
-| DAEMON-03 | Phase 5 | Pending |
-| DAEMON-04 | Phase 5 | Pending |
-| DAEMON-05 | Phase 5 | Pending |
 | ERROR-01 | Phase 2 | Pending |
 | ERROR-02 | Phase 2 | Pending |
 | ERROR-03 | Phase 2 | Pending |
 | ERROR-04 | Phase 2 | Pending |
 | ERROR-05 | Phase 2 | Pending |
-| TEST-01 | Phase 6 | Pending |
-| TEST-02 | Phase 6 | Pending |
-| TEST-03 | Phase 6 | Pending |
-| TEST-04 | Phase 6 | Pending |
-| TEST-05 | Phase 6 | Pending |
+| OUTPUT-01 | Phase 3 | Pending |
+| OUTPUT-02 | Phase 3 | Pending |
+| OUTPUT-03 | Phase 3 | Pending |
+| WEBHOOK-01 | Phase 3 | Pending |
+| WEBHOOK-02 | Phase 3 | Pending |
+| WEBHOOK-03 | Phase 3 | Pending |
+| DAEMON-01 | Phase 4 | Pending |
+| DAEMON-02 | Phase 4 | Pending |
+| DAEMON-03 | Phase 4 | Pending |
+| DAEMON-04 | Phase 4 | Pending |
+| DAEMON-05 | Phase 4 | Pending |
+| TEST-01 | Phase 4 | Pending |
+| TEST-02 | Phase 4 | Pending |
+| TEST-03 | Phase 4 | Pending |
+| TEST-04 | Phase 4 | Pending |
+| TEST-05 | Phase 4 | Pending |
 
 **Coverage:**
-- v1 requirements: 40 total
-- Mapped to phases: 40
+- v1 requirements: 42 total
+- Mapped to phases: 42
 - Unmapped: 0 ✓
 
 ---
 *Requirements defined: 2026-07-03*
-*Last updated: 2026-07-03 after initial definition*
+*Last updated: 2026-07-03 after roadmap creation*
