@@ -17,24 +17,10 @@ describe('types.ts', () => {
         expect(mod).toBeDefined();
     });
 
-    it('BrowserOptions accepts headless boolean', async () => {
-        // This test verifies the type can be used correctly at runtime
-        // TypeScript will catch type errors at compile time
-        const { default: pino } = await import('pino');
-        const logger = pino({ level: 'silent' });
-
-        // Dynamic import to test the module loads
+    it('module loads without error', async () => {
+        // TypeScript compilation verifies the interface shapes
+        // Runtime test just ensures the module loads without error
         const mod = await import('../src/types');
         expect(mod).toBeDefined();
-        logger.destroy();
-    });
-
-    it('ScraperOptions accepts query string and maxUrls number', async () => {
-        const { default: pino } = await import('pino');
-        const logger = pino({ level: 'silent' });
-
-        const mod = await import('../src/types');
-        expect(mod).toBeDefined();
-        logger.destroy();
     });
 });
