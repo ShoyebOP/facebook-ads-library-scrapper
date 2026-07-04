@@ -89,8 +89,8 @@ None — discussion stayed within phase scope
 |---------|---------|---------|--------------|
 | cloakbrowser | ^0.3.28 | Stealth browser automation | Anti-detection bypass for Facebook; already in project |
 | playwright-core | ^1.53.0 | Browser automation engine | Peer dependency of cloakbrowser; provides response interception |
-| pino | ^9.0.0 | Structured JSON logging | High-performance logging with child loggers and redaction |
-| p-retry | ^6.0.0 | Exponential backoff retry | Simple API for retrying async operations with backoff |
+| pino | ^10.3.1 | Structured JSON logging | High-performance logging with child loggers and redaction |
+| p-retry | ^8.0.0 | Exponential backoff retry | Simple API for retrying async operations with backoff |
 
 ### Supporting
 | Library | Version | Purpose | When to Use |
@@ -108,13 +108,13 @@ None — discussion stayed within phase scope
 
 **Installation:**
 ```bash
-bun add pino p-retry
+bun add pino@^10.3.1 p-retry@^8.0.0
 ```
 
 **Version verification:** Before writing the Standard Stack table, verify each recommended package exists and is current using the ecosystem-appropriate command:
 ```bash
-npm view pino version
-npm view p-retry version
+npm view pino version          # Returns 10.3.1
+npm view p-retry version       # Returns 8.0.0
 ```
 Document the verified version and publish date. Training data versions may be months stale — always confirm against the correct ecosystem registry.
 
@@ -492,11 +492,13 @@ function setupShutdownHandler(
 
 | # | Claim | Section | Risk if Wrong |
 |---|-------|---------|---------------|
-| A1 | pino version ^9.0.0 is current | Standard Stack | May need to adjust version |
-| A2 | p-retry version ^6.0.0 is current | Standard Stack | May need to adjust version |
+| A1 | pino version ^10.3.1 is current | Standard Stack | Verified via npm view |
+| A2 | p-retry version ^8.0.0 is current | Standard Stack | Verified via npm view |
 | A3 | Error classification system matches project needs | Code Examples | May need adjustment |
 
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed.
+
+**Note:** Versions A1 and A2 were verified via `npm view` after initial research. A3 remains assumed.
 
 ## Open Questions
 
