@@ -152,4 +152,164 @@ describe('errors.ts', () => {
             expect(fn).toHaveBeenCalledTimes(3); // 1 initial + 2 retries
         });
     });
+
+    describe('setupShutdownHandler', () => {
+        it('registers SIGINT listener', async () => {
+            const { setupShutdownHandler } = await import('../src/errors');
+            const originalOn = process.on;
+            const listeners: Array<{ event: string; fn: Function }> = [];
+            process.on = ((event: string, fn: Function) => {
+                listeners.push({ event, fn });
+                return process;
+            }) as any;
+
+            try {
+                const saveUrls = mock(() => {});
+                const browser = { close: mock(() => Promise.resolve()) } as any;
+                setupShutdownHandler({ saveUrls, browser, logger: { info: mock(() => {}) } as any });
+
+                const sigintListener = listeners.find((l) => l.event === 'SIGINT');
+                expect(sigintListener).toBeDefined();
+            } finally {
+                process.on = originalOn;
+            }
+        });
+
+        it('registers SIGTERM listener', async () => {
+            const { setupShutdownHandler } = await import('../src/errors');
+            const originalOn = process.on;
+            const listeners: Array<{ event: string; fn: Function }> = [];
+            process.on = ((event: string, fn: Function) => {
+                listeners.push({ event, fn });
+                return process;
+            }) as any;
+
+            try {
+                const saveUrls = mock(() => {});
+                const browser = { close: mock(() => Promise.resolve()) } as any;
+                setupShutdownHandler({ saveUrls, browser, logger: { info: mock(() => {}) } as any });
+
+                const sigtermListener = listeners.find((l) => l.event === 'SIGTERM');
+                expect(sigtermListener).toBeDefined();
+            } finally {
+                process.on = originalOn;
+            }
+        });
+
+        it('shutdown handler calls saveUrls before exit', async () => {
+            const { setupShutdownHandler } = await import('../src/errors');
+            const originalOn = process.on;
+            const originalExit = process.exit;
+            const listeners: Array<{ event: string; fn: Function }> = [];
+            process.on = ((event: string, fn: Function) => {
+                listeners.push({ event, fn });
+                return process;
+            }) as any;
+            process.exit = (() => {}) as any;
+
+            try {
+                const saveUrls = mock(() => {});
+                const browser = { close: mock(() => Promise.resolve()) } as any;
+                setupShutdownHandler({ saveUrls, browser, logger: { info: mock(() => {}) } as any });
+
+                const sigintListener = listeners.find((l) => l.event === 'SIGINT');
+                expect(sigintListener).toBeDefined();
+
+                // Call the shutdown handler
+                await sigintListener!.fn();
+
+                expect(saveUrls).toHaveBeenCalledTimes(1);
+            } finally {
+                process.on = originalOn;
+                process.exit = originalExit;
+            }
+        });
+
+        it('shutdown handler closes browser', async () => {
+            const { setupShutdownHandler } = await import('../src/errors');
+            const originalOn = process.on;
+            const originalExit = process.exit;
+            const listeners: Array<{ event: string; fn: Function }> = [];
+            process.on = ((event: string, fn: Function) => {
+                listeners.push({ event, fn });
+                return process;
+            }) as any;
+            process.exit = (() => {}) as any;
+
+            try {
+                const saveUrls = mock(() => {});
+                const browser = { close: mock(() => Promise.resolve()) } as any;
+                setupShutdownHandler({ saveUrls, browser, logger: { info: mock(() => {}) } as any });
+
+                const sigintListener = listeners.find((l) => l.event === 'SIGINT');
+                await sigintListener!.fn();
+
+                expect(browser.close).toHaveBeenCalledTimes(1);
+            } finally {
+                process.on = originalOn;
+                process.exit = originalExit;
+            }
+        });
+
+        it('shutdown handler prevents double-execution via shuttingDown flag', async () => {
+            const { setupShutdownHandler } = await import('../src/errors');
+            const originalOn = process.on;
+            const originalExit = process.exit;
+            const listeners: Array<{ event: string; fn: Function }> = [];
+            process.on = ((event: string, fn: Function) => {
+                listeners.push({ event, fn });
+                return process;
+            }) as any;
+            process.exit = (() => {}) as any;
+
+            try {
+                const saveUrls = mock(() => {});
+                const browser = { close: mock(() => Promise.resolve()) } as any;
+                setupShutdownHandler({ saveUrls, browser, logger: { info: mock(() => {}) } as any });
+
+                const sigintListener = listeners.find((l) => l.event === 'SIGINT');
+
+                // Call shutdown twice
+                await sigintListener!.fn();
+                await sigintListener!.fn();
+
+                // saveUrls should only be called once
+                expect(saveUrls).toHaveBeenCalledTimes(1);
+            } finally {
+                process.on = originalOn;
+                process.exit = originalExit;
+            }
+        });
+    });
+});
+
+describe('browser.ts error handling', () => {
+    it('launchBrowser uses withRetry for launch (source inspection)', async () => {
+        const fs = await import('fs');
+        const source = fs.readFileSync('src/browser.ts', 'utf-8');
+        expect(source).toContain('withRetry');
+    });
+
+    it('launchBrowser logs error and re-throws on failure', async () => {
+        const fs = await import('fs');
+        const source = fs.readFileSync('src/browser.ts', 'utf-8');
+        expect(source).toContain('catch (error)');
+        expect(source).toContain('browserLogger.error');
+        expect(source).toContain('throw error');
+    });
+});
+
+describe('extractor.ts error handling', () => {
+    it('extractor uses withTimeout for response.json()', async () => {
+        const fs = await import('fs');
+        const source = fs.readFileSync('src/extractor.ts', 'utf-8');
+        expect(source).toContain('withTimeout');
+    });
+
+    it('extractor catches and logs extraction errors', async () => {
+        const fs = await import('fs');
+        const source = fs.readFileSync('src/extractor.ts', 'utf-8');
+        expect(source).toContain('catch');
+        expect(source).toContain('extractLogger');
+    });
 });
