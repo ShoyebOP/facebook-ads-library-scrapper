@@ -54,14 +54,14 @@ Plans:
   4. Scraper recovers from transient errors (network timeouts, browser crashes) via exponential backoff retry
   5. Partial URL results are saved to disk every 100 URLs or on crash (no data loss)
 
-**Plans**: TBD
+**Plans:** 4 plans
 
 Plans:
 
-- [ ] 02-01: Browser layer — cloakbrowser integration, stealth config, humanization, network interception
-- [ ] 02-02: Extraction layer — GraphQL response parsing, profile URL extraction, deduplication
-- [ ] 02-03: Error handling — structured logging (pino), error classification, retry engine (p-retry)
-- [ ] 02-04: Scroll loop — adaptive timing, DOM cleanup, graceful shutdown handlers
+- [ ] 02-01-PLAN.md — Browser layer: cloakbrowser stealth integration, pino logging foundation
+- [ ] 02-02-PLAN.md — Extraction layer: GraphQL interception, profile URL extraction, deduplication
+- [ ] 02-03-PLAN.md — Error handling: error classification, retry engine, graceful shutdown
+- [ ] 02-04-PLAN.md — Scroll loop: adaptive timing, DOM cleanup, end-to-end pipeline wiring
 
 ### Phase 3: Output & Delivery
 
