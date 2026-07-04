@@ -1,16 +1,16 @@
 // --- Scraper engine — scroll loop with DOM cleanup ---
 
-import type { Logger } from 'pino';
 import type { Browser } from 'playwright-core';
 import { launchBrowser } from './browser.js';
-import { setupGraphQLInterceptor } from './extractor.js';
 import { withTimeout } from './errors.js';
+import { setupGraphQLInterceptor } from './extractor.js';
 import { createChildLogger } from './logger.js';
 import type { ScraperOptions } from './types.js';
 
 // --- Base URL for Facebook Ads Library search ---
 
-const BASE_URL = 'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BD&is_targeted_country=BD&media_type=all&publisher_platforms[0]=facebook&q={query}&search_type=keyword_unordered&sort_data[mode]=total_impressions&sort_data[direction]=desc';
+const BASE_URL =
+    'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BD&is_targeted_country=BD&media_type=all&publisher_platforms[0]=facebook&q={query}&search_type=keyword_unordered&sort_data[mode]=total_impressions&sort_data[direction]=desc';
 
 // --- Scroll interval between scrolls (D-14) ---
 
@@ -30,7 +30,9 @@ const SCROLL_RETRY_DELAY_MS = 1000;
 
 // --- Run the scraper: launch browser, scroll, extract URLs ---
 
-export async function runScraper(options: ScraperOptions): Promise<Set<string>> {
+export async function runScraper(
+    options: ScraperOptions,
+): Promise<Set<string>> {
     const {
         query,
         maxUrls = Infinity,
@@ -83,11 +85,15 @@ export async function runScraper(options: ScraperOptions): Promise<Set<string>> 
             // Scroll to bottom
             try {
                 await withTimeout(
-                    page.evaluate(() => window.scrollTo(0, document.body.scrollHeight)),
+                    page.evaluate(() =>
+                        window.scrollTo(0, document.body.scrollHeight),
+                    ),
                     SCROLL_TIMEOUT_MS,
                 );
             } catch (e) {
-                scrollLogger.error(`Scroll failed: ${(e as Error).message}. Retrying...`);
+                scrollLogger.error(
+                    `Scroll failed: ${(e as Error).message}. Retrying...`,
+                );
                 await page.waitForTimeout(SCROLL_RETRY_DELAY_MS);
                 continue;
             }
@@ -111,7 +117,9 @@ export async function runScraper(options: ScraperOptions): Promise<Set<string>> 
                     DOM_CLEANUP_TIMEOUT_MS,
                 );
             } catch (e) {
-                scrollLogger.error(`DOM cleanup failed: ${(e as Error).message}. Continuing...`);
+                scrollLogger.error(
+                    `DOM cleanup failed: ${(e as Error).message}. Continuing...`,
+                );
             }
 
             scrollCount++;
@@ -129,7 +137,9 @@ export async function runScraper(options: ScraperOptions): Promise<Set<string>> 
             } else {
                 noNewUrlsCount = 0;
                 lastLogTime = Date.now();
-                scrollLogger.info(`${profileUrls.size} unique profile URLs found...`);
+                scrollLogger.info(
+                    `${profileUrls.size} unique profile URLs found...`,
+                );
             }
         }
 

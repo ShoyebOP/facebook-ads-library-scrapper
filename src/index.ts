@@ -1,9 +1,9 @@
-// --- Main entry stub ---
+// --- Main entry — pipeline orchestrator ---
 
 import { loadConfig, resolvePreset } from './config.js';
-import { launchBrowser } from './browser.js';
+import { createLogger } from './logger.js';
 import { runScraper } from './scraper.js';
-import { saveOutput } from './output.js';
+import type { ScraperOptions } from './types.js';
 
 // --- CLI argument types ---
 
@@ -21,27 +21,36 @@ export type CliArgs = {
 
 // --- Main pipeline orchestrator ---
 
-export async function main(argv: CliArgs) {
-    console.log(`Query: ${argv.query}`);
-    console.log(`Max URLs: ${argv.maxUrls === undefined ? 'unlimited' : argv.maxUrls}`);
-    console.log(`Output file: output.json`);
-    console.log(`Launching Cloak browser...\n`);
+export async function main(argv: CliArgs): Promise<Set<string>> {
+    // D-20: create structured logger
+    const logger = createLogger();
 
     // Load configuration
     const config = await loadConfig();
 
     // Resolve preset if provided
-    let callbackUrl = '';
     if (argv.preset) {
         const preset = resolvePreset(config, argv.preset);
-        callbackUrl = preset.callback;
-        console.log(`Using preset: ${argv.preset} (${callbackUrl})`);
+        logger.info(`Using preset: ${argv.preset} (${preset.callback})`);
     }
 
-    // Run pipeline stubs
-    await launchBrowser();
-    await runScraper();
-    saveOutput();
+    // Construct ScraperOptions from CliArgs
+    const options: ScraperOptions = {
+        query: argv.query,
+        maxUrls: argv.maxUrls,
+        maxNoNewScrolls: argv.maxNoNewScrolls,
+        headless: argv.headless,
+        proxy: argv.proxy,
+        logger,
+    };
 
-    console.log('\nPipeline complete (stubs — real implementation in Phase 2)');
+    // Run scraper pipeline
+    const urls = await runScraper(options);
+
+    // Log completion with URL count
+    logger.info(
+        `Scraping complete: ${urls.size} unique profile URLs collected`,
+    );
+
+    return urls;
 }
