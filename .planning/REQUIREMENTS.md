@@ -9,12 +9,12 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Project Setup
 
-- [ ] **SETUP-01**: Project uses Bun-native TypeScript (no Node.js compatibility)
-- [ ] **SETUP-02**: TypeScript configured with `moduleResolution: "bun"` and `types: ["bun"]`
-- [ ] **SETUP-03**: Biome configured for linting and formatting (replaces ESLint + Prettier)
-- [ ] **SETUP-04**: bun:test configured for testing (replaces vitest/jest)
-- [ ] **SETUP-05**: Package.json has all dependencies with correct versions
-- [ ] **SETUP-06**: src/ directory structure with proper module boundaries
+- [x] **SETUP-01**: Project uses Bun-native TypeScript (no Node.js compatibility)
+- [x] **SETUP-02**: TypeScript configured with `moduleResolution: "bun"` and `types: ["bun"]`
+- [x] **SETUP-03**: Biome configured for linting and formatting (replaces ESLint + Prettier)
+- [x] **SETUP-04**: bun:test configured for testing (replaces vitest/jest)
+- [x] **SETUP-05**: Package.json has all dependencies with correct versions
+- [x] **SETUP-06**: src/ directory structure with proper module boundaries
 
 ### Core Scraper
 
@@ -31,11 +31,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Configuration
 
-- [ ] **CONFIG-01**: Preset-based configuration system (single CLI arg → config.json presets)
-- [ ] **CONFIG-02**: Config file discovery via cosmiconfig (package.json, .facebook-scraper.json, .config/)
-- [ ] **CONFIG-03**: Zod schema validation for config files
+- [x] **CONFIG-01**: Preset-based configuration system (single CLI arg → config.json presets)
+- [x] **CONFIG-02**: Config file discovery via cosmiconfig (package.json, .facebook-scraper.json, .config/)
+- [x] **CONFIG-03**: Zod schema validation for config files
 - [ ] **CONFIG-04**: Environment variable support with explicit --env-file flag
-- [ ] **CONFIG-05**: Example config file tracked in git
+- [x] **CONFIG-05**: Example config file tracked in git
 
 ### Output
 
@@ -112,17 +112,17 @@ Which phases cover which requirements. Updated during roadmap creation.
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| SETUP-01 | Phase 1 | Pending |
-| SETUP-02 | Phase 1 | Pending |
-| SETUP-03 | Phase 1 | Pending |
-| SETUP-04 | Phase 1 | Pending |
-| SETUP-05 | Phase 1 | Pending |
-| SETUP-06 | Phase 1 | Pending |
-| CONFIG-01 | Phase 1 | Pending |
-| CONFIG-02 | Phase 1 | Pending |
-| CONFIG-03 | Phase 1 | Pending |
+| SETUP-01 | Phase 1 | Complete |
+| SETUP-02 | Phase 1 | Complete |
+| SETUP-03 | Phase 1 | Complete |
+| SETUP-04 | Phase 1 | Complete |
+| SETUP-05 | Phase 1 | Complete |
+| SETUP-06 | Phase 1 | Complete |
+| CONFIG-01 | Phase 1 | Complete |
+| CONFIG-02 | Phase 1 | Complete |
+| CONFIG-03 | Phase 1 | Complete |
 | CONFIG-04 | Phase 1 | Pending |
-| CONFIG-05 | Phase 1 | Pending |
+| CONFIG-05 | Phase 1 | Complete |
 | SCRAPE-01 | Phase 2 | Pending |
 | SCRAPE-02 | Phase 2 | Pending |
 | SCRAPE-03 | Phase 2 | Pending |
@@ -156,6 +156,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | TEST-05 | Phase 4 | Pending |
 
 **Coverage:**
+
 - v1 requirements: 42 total
 - Mapped to phases: 42
 - Unmapped: 0 ✓
