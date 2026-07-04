@@ -13,7 +13,7 @@ Rewrite a monolithic 260-line Facebook Ads Library scraper into a modular, produ
 
 Decimal phases appear between their surrounding integers in numeric order.
 
-- [ ] **Phase 1: Foundation** - Bun-native TypeScript project setup, module structure, and preset-based configuration system
+- [x] **Phase 1: Foundation** - Bun-native TypeScript project setup, module structure, and preset-based configuration system (completed 2026-07-04)
 - [ ] **Phase 2: Core Scraper Engine** - Anti-detection browser automation, GraphQL interception, profile URL extraction, and error handling
 - [ ] **Phase 3: Output & Delivery** - Timestamped JSON file output, incremental saving, and webhook notification system
 - [ ] **Phase 4: Daemon & Validation** - Background daemon mode with PID management and comprehensive test suite
@@ -33,12 +33,12 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. TypeScript compiles with Bun-native module resolution (no Node.js compatibility layer)
   4. Biome lints and formats code; bun:test runs and reports results
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 
 - [x] 01-01-PLAN.md — Project scaffolding + config system (TypeScript, Biome, cosmiconfig, Zod, preset resolution)
-- [ ] 01-02-PLAN.md — CLI entry point + working pipeline (yargs, argument parsing, pipeline wiring)
+- [x] 01-02-PLAN.md — CLI entry point + working pipeline (yargs, argument parsing, pipeline wiring)
 
 ### Phase 2: Core Scraper Engine
 
@@ -111,7 +111,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Foundation | 1/2 | In Progress|  |
+| 1. Foundation | 2/2 | Complete   | 2026-07-04 |
 | 2. Core Scraper Engine | 0/4 | Not started | - |
 | 3. Output & Delivery | 0/2 | Not started | - |
 | 4. Daemon & Validation | 0/2 | Not started | - |

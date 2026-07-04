@@ -121,7 +121,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONFIG-01 | Phase 1 | Complete |
 | CONFIG-02 | Phase 1 | Complete |
 | CONFIG-03 | Phase 1 | Complete |
-| CONFIG-04 | Phase 1 | Pending |
+| CONFIG-04 | Phase 1 | Complete |
 | CONFIG-05 | Phase 1 | Complete |
 | SCRAPE-01 | Phase 2 | Pending |
 | SCRAPE-02 | Phase 2 | Pending |
