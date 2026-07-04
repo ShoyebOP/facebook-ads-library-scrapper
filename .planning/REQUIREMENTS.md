@@ -34,7 +34,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [x] **CONFIG-01**: Preset-based configuration system (single CLI arg → config.json presets)
 - [x] **CONFIG-02**: Config file discovery via cosmiconfig (package.json, .facebook-scraper.json, .config/)
 - [x] **CONFIG-03**: Zod schema validation for config files
-- [ ] **CONFIG-04**: Environment variable support with explicit --env-file flag
+- [x] **CONFIG-04**: Environment variable support with explicit --env-file flag
 - [x] **CONFIG-05**: Example config file tracked in git
 
 ### Output
