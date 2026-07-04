@@ -143,3 +143,20 @@ None - no external service configuration required.
 ---
 *Phase: 02-core-scraper-engine*
 *Completed: 2026-07-04*
+
+## Self-Check: PASSED
+
+All key files exist on disk:
+- src/extractor.ts ✓
+- src/errors.ts ✓
+- tests/extractor.test.ts ✓
+- tests/interceptor.test.ts ✓
+- .planning/phases/02-core-scraper-engine/02-02-SUMMARY.md ✓
+
+All commits exist in git history:
+- 1302712: test(02-02): add failing test for profile URL extraction ✓
+- f456b31: feat(02-02): implement profile URL extraction ✓
+- 3e20961: refactor(02-02): format extractor.ts with biome ✓
+- 976918b: test(02-02): add failing test for GraphQL response interceptor ✓
+- cf7eec6: feat(02-02): implement GraphQL response interceptor ✓
+- 6b1155d: docs(02-02): complete extraction layer plan ✓
