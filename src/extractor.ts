@@ -18,10 +18,7 @@ export function extractProfileUrls(obj: unknown, urls: Set<string>): void {
         }
     } else {
         for (const key of Object.keys(obj as Record<string, unknown>)) {
-            extractProfileUrls(
-                (obj as Record<string, unknown>)[key],
-                urls,
-            );
+            extractProfileUrls((obj as Record<string, unknown>)[key], urls);
         }
     }
 }
