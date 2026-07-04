@@ -14,7 +14,7 @@ Rewrite a monolithic 260-line Facebook Ads Library scraper into a modular, produ
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Bun-native TypeScript project setup, module structure, and preset-based configuration system (completed 2026-07-04)
-- [ ] **Phase 2: Core Scraper Engine** - Anti-detection browser automation, GraphQL interception, profile URL extraction, and error handling
+- [x] **Phase 2: Core Scraper Engine** - Anti-detection browser automation, GraphQL interception, profile URL extraction, and error handling (completed 2026-07-04)
 - [ ] **Phase 3: Output & Delivery** - Timestamped JSON file output, incremental saving, and webhook notification system
 - [ ] **Phase 4: Daemon & Validation** - Background daemon mode with PID management and comprehensive test suite
 
@@ -54,14 +54,14 @@ Plans:
   4. Scraper recovers from transient errors (network timeouts, browser crashes) via exponential backoff retry
   5. Partial URL results are saved to disk every 100 URLs or on crash (no data loss)
 
-**Plans:** 4 plans
+**Plans:** 4/4 plans complete
 
 Plans:
 
-- [ ] 02-01-PLAN.md — Browser layer: cloakbrowser stealth integration, pino logging foundation
-- [ ] 02-02-PLAN.md — Extraction layer: GraphQL interception, profile URL extraction, deduplication
-- [ ] 02-03-PLAN.md — Error handling: error classification, retry engine, graceful shutdown
-- [ ] 02-04-PLAN.md — Scroll loop: adaptive timing, DOM cleanup, end-to-end pipeline wiring
+- [x] 02-01-PLAN.md — Browser layer: cloakbrowser stealth integration, pino logging foundation
+- [x] 02-02-PLAN.md — Extraction layer: GraphQL interception, profile URL extraction, deduplication
+- [x] 02-03-PLAN.md — Error handling: error classification, retry engine, graceful shutdown
+- [x] 02-04-PLAN.md — Scroll loop: adaptive timing, DOM cleanup, end-to-end pipeline wiring
 
 ### Phase 3: Output & Delivery
 
@@ -112,6 +112,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete    | 2026-07-04 |
-| 2. Core Scraper Engine | 0/4 | Not started | - |
+| 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-04 |
 | 3. Output & Delivery | 0/2 | Not started | - |
 | 4. Daemon & Validation | 0/2 | Not started | - |
