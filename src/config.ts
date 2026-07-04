@@ -20,6 +20,36 @@ export type Preset = z.infer<typeof PresetSchema>;
 
 const explorer = cosmiconfig('facebook-scraper', {
     searchStrategy: 'project',
+    searchPlaces: [
+        'package.json',
+        '.facebook-scraper',
+        '.facebook-scraper.json',
+        '.facebook-scraper.yaml',
+        '.facebook-scraper.yml',
+        '.facebook-scraper.js',
+        '.facebook-scraper.ts',
+        '.facebook-scraper.cjs',
+        '.facebook-scraper.mjs',
+        '.config/facebook-scraper',
+        '.config/facebook-scraper.json',
+        '.config/facebook-scraper.yaml',
+        '.config/facebook-scraper.yml',
+        '.config/facebook-scraper.js',
+        '.config/facebook-scraper.ts',
+        '.config/facebook-scraper.cjs',
+        '.config/facebook-scraper.mjs',
+        'facebook-scraper.config.js',
+        'facebook-scraper.config.ts',
+        'facebook-scraper.config.cjs',
+        'facebook-scraper.config.mjs',
+        'config.json',
+        'config.yaml',
+        'config.yml',
+        'config.js',
+        'config.ts',
+        'config.cjs',
+        'config.mjs',
+    ],
 });
 
 // --- Load config from file system ---

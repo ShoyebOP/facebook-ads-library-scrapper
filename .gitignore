@@ -146,3 +146,6 @@ vite.config.ts.timestamp-*
 
 # Scraper output
 output/
+
+# Runtime config (use config.example.json as template)
+config.json
