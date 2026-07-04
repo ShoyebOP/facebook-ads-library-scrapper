@@ -1,0 +1,7 @@
+{
+  "presets": {
+    "leadgen": {
+      "callback": "https://example.com/webhook/leadgen"
+    }
+  }
+}
