@@ -13,6 +13,9 @@ export function createLogger(level: string = 'info'): pino.Logger {
 
 // --- Create child logger with module context ---
 
-export function createChildLogger(parent: pino.Logger, module: string): pino.Logger {
+export function createChildLogger(
+    parent: pino.Logger,
+    module: string,
+): pino.Logger {
     return parent.child({ module });
 }

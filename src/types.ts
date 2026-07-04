@@ -27,4 +27,8 @@ export interface ScraperOptions {
 
 // --- Error category (D-19) ---
 
-export type ErrorCategory = 'transient' | 'permanent' | 'browser' | 'extraction';
+export type ErrorCategory =
+    | 'transient'
+    | 'permanent'
+    | 'browser'
+    | 'extraction';
