@@ -4,11 +4,11 @@
 
 import yargs from 'yargs';
 import { hideBin } from 'yargs/helpers';
-import { main, type CliArgs } from './index.js';
+import { type CliArgs, main } from './index.js';
 
 // --- Parse CLI arguments ---
 
-const argv = await yargs(hideBin(process.argv))
+const argv = (await yargs(hideBin(process.argv))
     .options({
         query: {
             type: 'string',
@@ -53,7 +53,7 @@ const argv = await yargs(hideBin(process.argv))
     })
     .strict()
     .help()
-    .parse() as CliArgs;
+    .parse()) as CliArgs;
 
 // --- Validate required arguments ---
 

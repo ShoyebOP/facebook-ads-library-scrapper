@@ -9,9 +9,29 @@ export type ErrorType = 'transient' | 'permanent' | 'browser' | 'extraction';
 
 // --- Error classification keywords ---
 
-const TRANSIENT_KEYWORDS = ['timeout', 'timed out', 'network', 'econnrefused', 'econnreset', 'socket hang up', 'fetch failed'];
-const BROWSER_KEYWORDS = ['browser', 'crash', 'target closed', 'target detached', 'page closed', 'session closed'];
-const EXTRACTION_KEYWORDS = ['json', 'parse', 'unexpected token', 'syntax error'];
+const TRANSIENT_KEYWORDS = [
+    'timeout',
+    'timed out',
+    'network',
+    'econnrefused',
+    'econnreset',
+    'socket hang up',
+    'fetch failed',
+];
+const BROWSER_KEYWORDS = [
+    'browser',
+    'crash',
+    'target closed',
+    'target detached',
+    'page closed',
+    'session closed',
+];
+const EXTRACTION_KEYWORDS = [
+    'json',
+    'parse',
+    'unexpected token',
+    'syntax error',
+];
 
 // --- Helper: run a promise with a timeout ---
 
@@ -59,11 +79,16 @@ export async function withRetry<T>(
             try {
                 return await fn();
             } catch (error) {
-                const err = error instanceof Error ? error : new Error(String(error));
+                const err =
+                    error instanceof Error ? error : new Error(String(error));
                 const category = classifyError(err);
 
                 // Permanent errors: throw immediately, don't consume retry budget
-                if (category === 'permanent' || category === 'browser' || category === 'extraction') {
+                if (
+                    category === 'permanent' ||
+                    category === 'browser' ||
+                    category === 'extraction'
+                ) {
                     throw new AbortError(err.message);
                 }
 
@@ -102,13 +127,19 @@ export function setupShutdownHandler(deps: ShutdownDeps): void {
         try {
             deps.saveUrls(new Set());
         } catch (error) {
-            deps.logger.error({ err: error }, 'Failed to save URLs during shutdown');
+            deps.logger.error(
+                { err: error },
+                'Failed to save URLs during shutdown',
+            );
         }
 
         try {
             await deps.browser.close();
         } catch (error) {
-            deps.logger.error({ err: error }, 'Failed to close browser during shutdown');
+            deps.logger.error(
+                { err: error },
+                'Failed to close browser during shutdown',
+            );
         }
 
         process.exit(0);

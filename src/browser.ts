@@ -28,10 +28,10 @@ export async function launchBrowser(options: BrowserOptions): Promise<Browser> {
     browserLogger.debug({ launchOpts }, 'Launching cloakbrowser');
 
     try {
-        const browser = await withRetry(
-            () => launch(launchOpts),
-            { retries: 3, logger: browserLogger },
-        );
+        const browser = await withRetry(() => launch(launchOpts), {
+            retries: 3,
+            logger: browserLogger,
+        });
         browserLogger.info('Browser launched successfully');
         return browser;
     } catch (error) {

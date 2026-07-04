@@ -500,17 +500,17 @@ function setupShutdownHandler(
 
 **Note:** Versions A1 and A2 were verified via `npm view` after initial research. A3 remains assumed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Should we add pino-pretty for development?**
+1. **Should we add pino-pretty for development?** ✓ RESOLVED
    - What we know: pino outputs JSON by default, which is hard to read in development
-   - What's unclear: Whether to add pino-pretty as dev dependency
-   - Recommendation: Add pino-pretty as devDependency for development; use JSON in production
+   - Decision: Add pino-pretty as devDependency for development; use JSON in production
+   - Rationale: Developer experience improvement without production impact
 
-2. **Should we implement response body caching for debugging?**
+2. **Should we implement response body caching for debugging?** ✓ RESOLVED
    - What we know: GraphQL responses can be large and complex
-   - What's unclear: Whether to cache responses for debugging/replay
-   - Recommendation: Skip for MVP; add optional caching in future phase
+   - Decision: Skip for MVP; add optional caching in future phase
+   - Rationale: MVP scope is focused on core scraping functionality; caching adds complexity
 
 ## Environment Availability
 

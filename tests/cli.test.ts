@@ -20,7 +20,7 @@ const mockResolvePreset = mock((config: any, presetName: string) => {
 });
 
 const mockLaunchBrowser = mock(() => Promise.resolve());
-const mockRunScraper = mock(() => Promise.resolve());
+const mockRunScraper = mock(() => Promise.resolve(new Set<string>()));
 const mockSaveOutput = mock(() => {});
 
 // Mock the config module
@@ -153,23 +153,20 @@ describe('Pipeline integration', () => {
         expect(mockResolvePreset).not.toHaveBeenCalled();
     });
 
-    it('should call browser, scraper, output stubs in order', async () => {
+    it('should call config, then scraper in order', async () => {
         const callOrder: string[] = [];
-        mockLaunchBrowser.mockImplementation(() => {
-            callOrder.push('browser');
-            return Promise.resolve();
+        mockLoadConfig.mockImplementation(() => {
+            callOrder.push('config');
+            return Promise.resolve({ presets: {} });
         });
         mockRunScraper.mockImplementation(() => {
             callOrder.push('scraper');
-            return Promise.resolve();
-        });
-        mockSaveOutput.mockImplementation(() => {
-            callOrder.push('output');
+            return Promise.resolve(new Set<string>());
         });
 
         await main(validArgs);
 
-        expect(callOrder).toEqual(['browser', 'scraper', 'output']);
+        expect(callOrder).toEqual(['config', 'scraper']);
     });
 
     it('should handle preset resolution error', async () => {

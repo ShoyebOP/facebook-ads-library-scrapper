@@ -287,17 +287,15 @@ const argv = yargs(hideBin(process.argv))
 
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Which preset fields beyond callback URL?**
-   - What we know: Only callback URL for now (D-05)
-   - What's unclear: Future fields, schema extensibility
-   - Recommendation: Design Zod schema to allow additional fields via `.passthrough()` or optional properties
+   - **RESOLVED:** Only callback URL for now (D-05 explicitly states this)
+   - Schema extensibility: Design Zod schema to allow additional fields via `.passthrough()` or optional properties
 
 2. **How to handle config file location priority?**
-   - What we know: `.facebook-scraper.json` or `config.json` (D-07)
-   - What's unclear: If both exist, which takes precedence?
-   - Recommendation: Document priority in README, cosmiconfig search order handles this
+   - **RESOLVED:** cosmiconfig handles search order automatically (D-07 specifies project root location)
+   - cosmiconfig's `searchStrategy: 'project'` searches in standard locations with documented precedence
 
 ## Environment Availability
 
