@@ -2,6 +2,7 @@
 
 import { launch } from 'cloakbrowser';
 import type { Browser } from 'playwright-core';
+import { withRetry } from './errors.js';
 import { createChildLogger } from './logger.js';
 import type { BrowserOptions } from './types.js';
 
@@ -27,7 +28,10 @@ export async function launchBrowser(options: BrowserOptions): Promise<Browser> {
     browserLogger.debug({ launchOpts }, 'Launching cloakbrowser');
 
     try {
-        const browser = await launch(launchOpts);
+        const browser = await withRetry(
+            () => launch(launchOpts),
+            { retries: 3, logger: browserLogger },
+        );
         browserLogger.info('Browser launched successfully');
         return browser;
     } catch (error) {
