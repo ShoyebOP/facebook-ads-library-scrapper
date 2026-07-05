@@ -16,7 +16,7 @@ Decimal phases appear between their surrounding integers in numeric order.
 - [x] **Phase 1: Foundation** - Bun-native TypeScript project setup, module structure, and preset-based configuration system (completed 2026-07-04)
 - [x] **Phase 2: Core Scraper Engine** - Anti-detection browser automation, GraphQL interception, profile URL extraction, and error handling (completed 2026-07-05)
 - [x] **Phase 3: Output & Delivery** - Timestamped JSON file output, incremental saving, and webhook notification system (completed 2026-07-05)
-- [ ] **Phase 4: Daemon & Validation** - Background daemon mode with PID management and comprehensive test suite
+- [x] **Phase 4: Daemon & Validation** - Background daemon mode with PID management and comprehensive test suite (completed 2026-07-05)
 
 ## Phase Details
 
@@ -39,6 +39,17 @@ Plans:
 
 - [x] 01-01-PLAN.md — Project scaffolding + config system (TypeScript, Biome, cosmiconfig, Zod, preset resolution)
 - [x] 01-02-PLAN.md — CLI entry point + working pipeline (yargs, argument parsing, pipeline wiring)
+
+### Phase 01.1: Entry Point & Cleanup (INSERTED)
+
+**Goal:** CLI usability improvement — make the scraper runnable from project root, add custom ad library URL per preset, clean up legacy files, and create comprehensive documentation
+**Requirements**: SETUP-01, CONFIG-01, CONFIG-05
+**Depends on:** Phase 1
+**Plans:** 1 plan
+
+Plans:
+
+- [ ] 01.1-01-PLAN.md — Entry point setup, config schema extension, pipeline wiring, legacy cleanup, and README
 
 ### Phase 2: Core Scraper Engine
 
@@ -101,12 +112,14 @@ Plans:
   4. Unit tests pass for extraction logic and configuration parsing
   5. Integration tests validate CLI argument parsing and webhook notification behavior
 
-**Plans:** 2 plans
+**Plans:** 3/3 plans complete
 
 Plans:
 
-- [ ] 04-01-PLAN.md — Daemon mode: child process forking, PID management, flock locking, signal handlers, CLI integration
-- [ ] 04-02-PLAN.md — Comprehensive test suite: unit/integration/E2E tests with 70% coverage, test fixtures, bunfig.toml
+- [x] 04-PLAN.md
+
+- [x] 04-01-PLAN.md — Daemon mode: child process forking, PID management, flock locking, signal handlers, CLI integration
+- [x] 04-02-PLAN.md — Comprehensive test suite: unit/integration/E2E tests with 70% coverage, test fixtures, bunfig.toml
 
 ## Progress
 
@@ -116,6 +129,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete    | 2026-07-04 |
+| 1.1. Entry Point & Cleanup | 0/1 | Planned | — |
 | 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-05 |
 | 3. Output & Delivery | 2/2 | Complete   | 2026-07-05 |
-| 4. Daemon & Validation | 0/2 | Not started | - |
+| 4. Daemon & Validation | 3/3 | Complete    | 2026-07-05 |
