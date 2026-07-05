@@ -42,6 +42,7 @@ export async function runScraper(
         locale,
         timezone,
         logger,
+        incrementalSaver,
     } = options;
 
     const scrollLogger = createChildLogger(logger, 'scroll');
@@ -62,6 +63,9 @@ export async function runScraper(
             timezone,
             logger,
         });
+
+        // Notify caller that browser is ready (for shutdown handler cleanup)
+        options.onBrowserReady?.(browser);
 
         const page = await browser.newPage();
 
@@ -143,6 +147,9 @@ export async function runScraper(
                     `${profileUrls.size} unique profile URLs found...`,
                 );
             }
+
+            // Incremental save — persist URLs periodically
+            incrementalSaver?.(profileUrls);
         }
 
         if (profileUrls.size >= maxUrls) {

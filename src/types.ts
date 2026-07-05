@@ -1,5 +1,6 @@
 // --- Shared types and interfaces ---
 
+import type { Browser } from 'playwright-core';
 import type { Logger } from 'pino';
 
 // --- Browser options ---
@@ -25,6 +26,7 @@ export interface ScraperOptions {
     url?: string;
     logger: Logger;
     incrementalSaver?: (urls: Set<string>) => void;
+    onBrowserReady?: (browser: Browser) => void;
 }
 
 // --- Output options (D-01 to D-04) ---

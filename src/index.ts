@@ -3,6 +3,7 @@
 import { loadConfig, resolvePreset } from './config.js';
 import { createLogger } from './logger.js';
 import {
+    createIncrementalSaver,
     ensureOutputDir,
     generateOutputPath,
     saveUrlsToFile,
@@ -75,6 +76,16 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     }
     // If neither, resolvedUrl remains undefined and scraper.ts will use DEFAULT_BASE_URL
 
+    // Generate output path early — needed for incremental saver and shutdown handler
+    const outputFile = generateOutputPath({ query: argv.query, logger });
+    await ensureOutputDir('output');
+
+    // D-05: create incremental saver for periodic URL writes during scraping
+    const incrementalSaver = createIncrementalSaver({ outputFile });
+
+    // Capture browser reference for shutdown handler cleanup
+    let browserRef: import('playwright-core').Browser | null = null;
+
     // Construct ScraperOptions from CliArgs
     const options: ScraperOptions = {
         query: argv.query,
@@ -84,10 +95,29 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
         proxy: argv.proxy,
         url: resolvedUrl,
         logger,
+        incrementalSaver,
+        onBrowserReady: (b) => { browserRef = b; },
     };
 
     // Run scraper pipeline
     const urls = await runScraper(options);
+
+    // D-08: Wire shutdown handlers when running as daemon
+    if (process.env.SCRAPER_DAEMON_CHILD === '1') {
+        const { setupDaemonShutdown } = await import('./daemon.js');
+        setupDaemonShutdown({
+            saveState: () => {
+                saveUrlsToFile(outputFile, urls);
+                logger.info(`Saved ${urls.size} URLs during shutdown`);
+            },
+            cleanup: async () => {
+                if (browserRef) {
+                    try { await browserRef.close(); } catch (err) { logger.error({ err }, 'Failed to close browser during shutdown'); }
+                }
+            },
+            logger,
+        });
+    }
 
     // Log completion with URL count
     logger.info(
@@ -95,8 +125,6 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     );
 
     // D-07: save file BEFORE webhook notification (data safety)
-    const outputFile = generateOutputPath({ query: argv.query, logger });
-    await ensureOutputDir('output');
     saveUrlsToFile(outputFile, urls);
     logger.info(`Saved ${urls.size} unique profile URLs to ${outputFile}`);
 
