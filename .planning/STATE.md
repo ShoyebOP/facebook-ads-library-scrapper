@@ -2,19 +2,19 @@
 gsd_state_version: 1.0
 milestone: v1.0
 milestone_name: milestone
-current_phase: 03
-status: completed
-stopped_at: Phase 4 context gathered
-last_updated: "2026-07-05T15:15:38.548Z"
+current_phase: 01.1
+status: in_progress
+stopped_at: Phase 01.1 context gathered
+last_updated: "2026-07-05T17:41:31.192Z"
 last_activity: 2026-07-05
-last_activity_desc: Phase 03 marked complete
+last_activity_desc: Phase 01.1 inserted (URGENT)
 progress:
-  total_phases: 4
-  completed_phases: 3
-  total_plans: 8
-  completed_plans: 8
-  percent: 75
-current_phase_name: output-delivery
+  total_phases: 5
+  completed_phases: 4
+  total_plans: 11
+  completed_plans: 11
+  percent: 80
+current_phase_name: daemon-validation
 ---
 
 # Project State
@@ -24,14 +24,14 @@ current_phase_name: output-delivery
 See: .planning/PROJECT.md (updated 2026-07-03)
 
 **Core value:** Reliably extract Facebook Ads Library profile URLs at scale without detection, delivering results via JSON files and webhook notifications.
-**Current focus:** Phase 03 — output-delivery
+**Current focus:** Phase 01.1 — make a entry point or move the cli to the root
 
 ## Current Position
 
-Phase: 03 — COMPLETE
-Plan: 2 of 2
-Status: Phase 03 complete
-Last activity: 2026-07-05 — Phase 03 marked complete
+Phase: 01.1
+Plan: Not started
+Status: Urgent insertion - not planned yet
+Last activity: 2026-07-05 — Phase 01.1 inserted (URGENT)
 
 Progress: [░░░░░░░░░░] 0%
 
@@ -39,7 +39,7 @@ Progress: [░░░░░░░░░░] 0%
 
 **Velocity:**
 
-- Total plans completed: 2
+- Total plans completed: 5
 - Average duration: -
 - Total execution time: 0 hours
 
@@ -48,6 +48,7 @@ Progress: [░░░░░░░░░░] 0%
 | Phase | Plans | Total | Avg/Plan |
 |-------|-------|-------|----------|
 | 01 | 2 | - | - |
+| 04 | 3 | - | - |
 
 **Recent Trend:**
 
@@ -81,6 +82,7 @@ None yet.
 ### Roadmap Evolution
 
 - Phase 5 added: check the phase 1 requirements and fix the gaps that has not been completed
+- Phase 01.1 inserted after Phase 1: make a entry point or move the cli to the root so i don't have to call it from the src, also add the option to set custom ad library url per preset and make the current one as fallback if empty. and remove the old js versions and reference to it then create or update the project readme (URGENT)
 
 ## Deferred Items
 
@@ -92,6 +94,6 @@ Items acknowledged and carried forward from previous milestone close:
 
 ## Session Continuity
 
-Last session: 2026-07-05T15:15:38.543Z
-Stopped at: Phase 4 context gathered
-Resume file: .planning/phases/04-daemon-validation/04-CONTEXT.md
+Last session: 2026-07-05T17:41:31.148Z
+Stopped at: Phase 01.1 context gathered
+Resume file: .planning/phases/01.1-make-a-entry-point-or-move-the-cli-to-the-root-so-i-don-t-ha/01.1-CONTEXT.md
