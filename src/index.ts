@@ -21,6 +21,7 @@ export type CliArgs = {
     maxUrls?: number;
     maxNoNewScrolls: number;
     daemon: boolean;
+    daemonAction?: string;
     callback?: string;
     envFile?: string;
 };
@@ -30,6 +31,16 @@ export type CliArgs = {
 export async function main(argv: CliArgs): Promise<Set<string>> {
     // D-20: create structured logger
     const logger = createLogger();
+
+    // D-04: If --daemon flag, fork child process and exit parent
+    if (argv.daemon) {
+        const { startDaemon } = await import('./daemon.js');
+        const daemonArgv = process.argv.slice(2);
+        const pid = await startDaemon(argv.query, daemonArgv, logger);
+        console.log(pid); // Parent prints PID to stdout
+        logger.info(`Daemon started (PID: ${pid})`);
+        process.exit(0);
+    }
 
     // Load configuration
     const config = await loadConfig();

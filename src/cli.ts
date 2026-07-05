@@ -42,6 +42,11 @@ const argv = (await yargs(hideBin(process.argv))
             default: false,
             describe: 'Run as background process',
         },
+        'daemon-action': {
+            type: 'string',
+            choices: ['stop', 'status', 'logs'],
+            describe: 'Manage running daemon (stop, status, logs)',
+        },
         callback: {
             type: 'string',
             describe: 'Webhook callback name (overrides preset)',
@@ -75,6 +80,37 @@ if (argv.maxNoNewScrolls !== undefined) {
     if (isNaN(argv.maxNoNewScrolls) || argv.maxNoNewScrolls <= 0) {
         console.error('Error: --max-no-new-scrolls must be a positive integer');
         process.exit(1);
+    }
+}
+
+// --- Handle daemon actions ---
+
+if (argv.daemonAction) {
+    const { stopDaemon } = await import('./daemon.js');
+    const { createLogger } = await import('./logger.js');
+    const logger = createLogger();
+
+    if (argv.daemonAction === 'stop') {
+        await stopDaemon(logger);
+        process.exit(0);
+    } else if (argv.daemonAction === 'status') {
+        const { readPid, isProcessRunning } = await import('./daemon.js');
+        const pid = readPid();
+        if (pid && isProcessRunning(pid)) {
+            console.log(`Daemon running (PID: ${pid})`);
+        } else {
+            console.log('Daemon not running');
+        }
+        process.exit(0);
+    } else if (argv.daemonAction === 'logs') {
+        const fs = await import('fs');
+        try {
+            const content = fs.readFileSync('daemon.log', 'utf-8');
+            console.log(content);
+        } catch {
+            console.error('No daemon log file found');
+        }
+        process.exit(0);
     }
 }
 
