@@ -79,8 +79,12 @@ Plans:
 **Plans:** 2 plans
 
 Plans:
+**Wave 1**
 
 - [ ] 03-01-PLAN.md — Output module: types, timestamped JSON writer, directory creation, incremental saving, tests
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 03-02-PLAN.md — Webhook module: HTTP POST with retry, pipeline wiring, integration tests
 
 ### Phase 4: Daemon & Validation
