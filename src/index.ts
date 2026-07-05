@@ -48,11 +48,32 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
 
     // Resolve preset if provided
     let webhookUrl: string | null = null;
+    let adLibraryUrl: string | undefined;
     if (argv.preset) {
         const preset = resolvePreset(config, argv.preset);
         webhookUrl = resolveEndpoint(preset);
+        adLibraryUrl = preset.adLibraryUrl;
         logger.info(`Using preset: ${argv.preset} (${webhookUrl})`);
     }
+
+    // Determine ad library URL with precedence: CLI flag > config preset > default
+    let resolvedUrl: string | undefined;
+    if (argv.url) {
+        // CLI --url flag has highest priority
+        resolvedUrl = argv.url.replace(
+            '{query}',
+            encodeURIComponent(argv.query),
+        );
+        logger.info(`Using CLI --url flag: ${argv.url}`);
+    } else if (adLibraryUrl) {
+        // Config preset adLibraryUrl
+        resolvedUrl = adLibraryUrl.replace(
+            '{query}',
+            encodeURIComponent(argv.query),
+        );
+        logger.info(`Using preset adLibraryUrl: ${adLibraryUrl}`);
+    }
+    // If neither, resolvedUrl remains undefined and scraper.ts will use DEFAULT_BASE_URL
 
     // Construct ScraperOptions from CliArgs
     const options: ScraperOptions = {
@@ -61,6 +82,7 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
         maxNoNewScrolls: argv.maxNoNewScrolls,
         headless: argv.headless,
         proxy: argv.proxy,
+        url: resolvedUrl,
         logger,
     };
 

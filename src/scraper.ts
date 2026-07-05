@@ -7,9 +7,9 @@ import { setupGraphQLInterceptor } from './extractor.js';
 import { createChildLogger } from './logger.js';
 import type { ScraperOptions } from './types.js';
 
-// --- Base URL for Facebook Ads Library search ---
+// --- Default base URL for Facebook Ads Library search ---
 
-const BASE_URL =
+const DEFAULT_BASE_URL =
     'https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=BD&is_targeted_country=BD&media_type=all&publisher_platforms[0]=facebook&q={query}&search_type=keyword_unordered&sort_data[mode]=total_impressions&sort_data[direction]=desc';
 
 // --- Scroll interval between scrolls (D-14) ---
@@ -47,8 +47,10 @@ export async function runScraper(
     const scrollLogger = createChildLogger(logger, 'scroll');
     const profileUrls = new Set<string>();
 
-    // Build search URL
-    const searchUrl = BASE_URL.replace('{query}', encodeURIComponent(query));
+    // Build search URL: use provided URL or fall back to default
+    const searchUrl =
+        options.url ??
+        DEFAULT_BASE_URL.replace('{query}', encodeURIComponent(query));
 
     // Launch browser (D-04: will be closed in finally)
     let browser: Browser | null = null;

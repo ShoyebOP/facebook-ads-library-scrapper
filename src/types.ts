@@ -22,6 +22,7 @@ export interface ScraperOptions {
     proxy?: string;
     locale?: string;
     timezone?: string;
+    url?: string;
     logger: Logger;
 }
 
