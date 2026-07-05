@@ -24,6 +24,7 @@ export interface ScraperOptions {
     timezone?: string;
     url?: string;
     logger: Logger;
+    incrementalSaver?: (urls: Set<string>) => void;
 }
 
 // --- Output options (D-01 to D-04) ---
