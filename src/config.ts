@@ -7,6 +7,7 @@ import { z } from 'zod';
 
 const PresetSchema = z.object({
     callback: z.string().url(),
+    adLibraryUrl: z.string().url().optional(),
 });
 
 const ConfigSchema = z.object({

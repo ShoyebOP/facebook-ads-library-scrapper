@@ -1,7 +1,8 @@
 {
   "presets": {
     "leadgen": {
-      "callback": "https://example.com/webhook/leadgen"
+      "callback": "https://example.com/webhook/leadgen",
+      "adLibraryUrl": "https://www.facebook.com/ads/library/?active_status=active&ad_type=all&country=ALL&q={query}"
     }
   }
 }

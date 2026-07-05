@@ -55,6 +55,10 @@ const argv = (await yargs(hideBin(process.argv))
             type: 'string',
             describe: 'Path to env file',
         },
+        url: {
+            type: 'string',
+            describe: 'Override ad library URL for this run',
+        },
     })
     .strict()
     .help()
@@ -70,14 +74,14 @@ if (!argv.query) {
 // --- Validate numeric arguments ---
 
 if (argv.maxUrls !== undefined) {
-    if (isNaN(argv.maxUrls) || argv.maxUrls <= 0) {
+    if (Number.isNaN(argv.maxUrls) || argv.maxUrls <= 0) {
         console.error('Error: --max-urls must be a positive integer');
         process.exit(1);
     }
 }
 
 if (argv.maxNoNewScrolls !== undefined) {
-    if (isNaN(argv.maxNoNewScrolls) || argv.maxNoNewScrolls <= 0) {
+    if (Number.isNaN(argv.maxNoNewScrolls) || argv.maxNoNewScrolls <= 0) {
         console.error('Error: --max-no-new-scrolls must be a positive integer');
         process.exit(1);
     }
@@ -103,7 +107,7 @@ if (argv.daemonAction) {
         }
         process.exit(0);
     } else if (argv.daemonAction === 'logs') {
-        const fs = await import('fs');
+        const fs = await import('node:fs');
         try {
             const content = fs.readFileSync('daemon.log', 'utf-8');
             console.log(content);

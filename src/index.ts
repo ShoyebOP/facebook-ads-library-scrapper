@@ -24,6 +24,7 @@ export type CliArgs = {
     daemonAction?: string;
     callback?: string;
     envFile?: string;
+    url?: string;
 };
 
 // --- Main pipeline orchestrator ---

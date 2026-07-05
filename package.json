@@ -4,6 +4,9 @@
   "type": "module",
   "description": "Facebook Ads Library profile URL scraper using Cloak browser",
   "main": "src/index.ts",
+  "bin": {
+    "fb-ad-scraper": "./src/cli.ts"
+  },
   "scripts": {
     "start": "bun run src/cli.ts",
     "dev": "bun run --watch src/cli.ts",
