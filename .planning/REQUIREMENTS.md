@@ -40,7 +40,7 @@ Requirements for initial release. Each maps to roadmap phases.
 ### Output
 
 - [ ] **OUTPUT-01**: JSON output to timestamped files (DD-MM-YYYY:HH:MM.query.json)
-- [ ] **OUTPUT-02**: Incremental URL saving (every 100 new URLs or on crash)
+- [x] **OUTPUT-02**: Incremental URL saving (every 100 new URLs or on crash)
 - [ ] **OUTPUT-03**: Output directory creation if not exists
 
 ### Webhook
@@ -139,7 +139,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ERROR-04 | Phase 2 | Pending |
 | ERROR-05 | Phase 2 | Pending |
 | OUTPUT-01 | Phase 3 | Pending |
-| OUTPUT-02 | Phase 3 | Pending |
+| OUTPUT-02 | Phase 3 | Complete |
 | OUTPUT-03 | Phase 3 | Pending |
 | WEBHOOK-01 | Phase 3 | Complete |
 | WEBHOOK-02 | Phase 3 | Complete |
