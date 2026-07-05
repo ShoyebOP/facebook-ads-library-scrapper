@@ -16,7 +16,8 @@
     "cloakbrowser": "^0.3.28",
     "p-retry": "^8.0.0",
     "pino": "^10.3.1",
-    "playwright-core": "^1.53.0"
+    "playwright-core": "^1.53.0",
+    "proper-lockfile": "^4.1.2"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.5.2",

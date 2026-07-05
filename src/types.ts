@@ -65,3 +65,11 @@ export interface WebhookOptions {
     retries?: number;
     logger: Logger;
 }
+
+// --- Daemon options (D-01 to D-12) ---
+
+export interface DaemonOptions {
+    query: string;
+    argv: string[];
+    logger: Logger;
+}
