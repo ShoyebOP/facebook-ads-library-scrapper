@@ -101,11 +101,12 @@ Plans:
   4. Unit tests pass for extraction logic and configuration parsing
   5. Integration tests validate CLI argument parsing and webhook notification behavior
 
-**Plans:** 1 plan
+**Plans:** 2 plans
 
 Plans:
 
-- [ ] 04-PLAN.md — Daemon mode (Plan 04-01) + comprehensive test suite (Plan 04-02): child process forking, PID management, flock locking, signal handlers, unit/integration/E2E tests with 70% coverage
+- [ ] 04-01-PLAN.md — Daemon mode: child process forking, PID management, flock locking, signal handlers, CLI integration
+- [ ] 04-02-PLAN.md — Comprehensive test suite: unit/integration/E2E tests with 70% coverage, test fixtures, bunfig.toml
 
 ## Progress
 
@@ -117,4 +118,4 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | 1. Foundation | 2/2 | Complete    | 2026-07-04 |
 | 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-05 |
 | 3. Output & Delivery | 2/2 | Complete   | 2026-07-05 |
-| 4. Daemon & Validation | 0/1 | Not started | - |
+| 4. Daemon & Validation | 0/2 | Not started | - |

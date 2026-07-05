@@ -1,9 +1,3 @@
-## Phase Goal
-
-**As a** developer running automated scraping workflows, **I want to** start the scraper as a background daemon with PID management and graceful shutdown, **so that** it runs reliably without blocking my terminal and can be stopped cleanly.
-
-## Plan 04-01: Daemon Mode
-
 ---
 phase: 04-daemon-validation
 plan: 01
@@ -12,9 +6,9 @@ wave: 1
 depends_on: []
 files_modified:
   - src/daemon.ts
-  - src/types.ts
   - src/cli.ts
   - src/index.ts
+  - src/types.ts
   - test/integration/daemon.test.ts
 autonomous: true
 requirements:
@@ -23,12 +17,7 @@ requirements:
   - DAEMON-03
   - DAEMON-04
   - DAEMON-05
-user_setup:
-  - service: npm
-    why: "Install proper-lockfile package for PID management"
-    env_vars:
-      - name: PROPER_LOCKFILE_VERSION
-        source: "npm registry (17M+ weekly downloads, verified OK)"
+user_setup: []
 
 must_haves:
   truths:
@@ -40,19 +29,22 @@ must_haves:
     - "Daemon can be stopped via --daemon-action stop"
   artifacts:
     - src/daemon.ts
+    - src/cli.ts (modified)
+    - src/index.ts (modified)
+    - src/types.ts (modified)
     - test/integration/daemon.test.ts
   key_links:
-    - "cli.ts → daemon.ts (fork on --daemon flag)"
-    - "daemon.ts → child_process.fork (detached process)"
-    - "daemon.ts → proper-lockfile (PID locking)"
-    - "daemon.ts → index.ts (child runs pipeline)"
+    - "cli.ts -> daemon.ts (fork on --daemon flag)"
+    - "daemon.ts -> child_process.fork (detached process)"
+    - "daemon.ts -> proper-lockfile (PID locking)"
+    - "daemon.ts -> index.ts (child runs pipeline)"
 ---
 
 <objective>
-Implement daemon mode with proper process management, PID file locking, and signal handlers.
+Implement daemon mode with proper process management, PID file locking, signal handlers, and CLI integration.
 
 Purpose: Enable background execution for automated scraping workflows with reliable process lifecycle management.
-Output: daemon.ts module, CLI integration, daemon integration tests.
+Output: daemon.ts module, CLI integration with --daemon-action flag, daemon integration tests.
 </objective>
 
 <execution_context>
@@ -71,6 +63,7 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
 @src/index.ts
 @src/errors.ts
 @src/logger.ts
+@src/types.ts
 </context>
 
 <tasks>
@@ -82,6 +75,7 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
     - src/errors.ts (shutdown handler pattern at lines 118-150)
     - src/logger.ts (createChildLogger pattern)
     - .planning/phases/04-daemon-validation/04-RESEARCH.md (Pattern 1-3)
+    - .planning/phases/04-daemon-validation/04-PATTERNS.md (daemon.ts patterns)
   </read_first>
   <behavior>
     - startDaemon() acquires flock on .daemon.pid, forks detached child, writes PID, returns child PID
@@ -96,7 +90,7 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
     - isProcessRunning() returns true for existing process, false for non-existent
   </behavior>
   <action>
-    1. Install proper-lockfile: `bun add proper-lockfile`
+    1. Install proper-lockfile: `bun add proper-lockfile` (verified: 17M+ weekly downloads, OK verdict per Package Legitimacy Audit)
     2. Create src/daemon.ts with the following exports per D-01 through D-12:
        - PID_FILE = '.daemon.pid' (D-07, D-08)
        - LOG_FILE = 'daemon.log' (D-11)
@@ -104,18 +98,18 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
        - readPid(): number | null
        - removePidFile(): void
        - isProcessRunning(pid: number): boolean (uses process.kill(pid, 0))
-       - startDaemon(query: string, argv: string[], logger: Logger): Promise<number> — acquires lock per D-09, checks existing daemon per D-06, clears log per D-12, forks child detached per D-04, writes PID, releases lock
-       - stopDaemon(logger: Logger): Promise<void> — reads PID, checks running, sends SIGTERM per D-05, removes PID file
-       - setupShutdownHandler(deps: { saveState: () => void; cleanup: () => Promise<void>; logger: Logger }): void — registers SIGTERM/SIGINT, calls saveState then cleanup then removePidFile per D-10
-    3. Add daemon-related types to src/types.ts: DaemonOptions interface
-    4. Write test/integration/daemon.test.ts with mock.module for child_process.fork and fs operations:
+       - startDaemon(query: string, argv: string[], logger: Logger): Promise<number> -- acquires lock per D-09, checks existing daemon per D-06, clears log per D-12, forks child detached per D-04, writes PID, releases lock
+       - stopDaemon(logger: Logger): Promise<void> -- reads PID, checks running, sends SIGTERM per D-05, removes PID file
+       - setupDaemonShutdown(deps: { saveState: () => void; cleanup: () => Promise<void>; logger: Logger }): void -- registers SIGTERM/SIGINT, calls saveState then cleanup then removePidFile per D-10
+    3. Add DaemonOptions interface to src/types.ts: { query: string; argv: string[]; logger: Logger }
+    4. Write test/integration/daemon.test.ts using mock.module for child_process.fork and fs operations:
        - Test startDaemon forks with detached option
        - Test startDaemon writes PID to .daemon.pid
        - Test startDaemon throws if daemon already running
        - Test stopDaemon sends SIGTERM to existing PID
        - Test stopDaemon handles stale PID gracefully
-       - Test setupShutdownHandler registers SIGTERM and SIGINT
-    5. Run `bun test test/integration/daemon.test.ts` — all tests must pass
+       - Test setupDaemonShutdown registers SIGTERM and SIGINT
+    5. Run `bun test test/integration/daemon.test.ts` -- all tests must pass
   </action>
   <verify>
     <automated>bun test test/integration/daemon.test.ts</automated>
@@ -135,10 +129,10 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
   <name>Task 2: Wire daemon into CLI and pipeline, add --daemon-action flag</name>
   <files>src/cli.ts, src/index.ts, src/types.ts</files>
   <read_first>
-    - src/daemon.ts (exports from Task 1 — Task 2 depends on Task 1 completion)
     - src/cli.ts (existing --daemon flag at lines 40-44)
     - src/index.ts (main pipeline at lines 30-79)
     - .planning/phases/04-daemon-validation/04-CONTEXT.md (D-01 through D-06)
+    - .planning/phases/04-daemon-validation/04-PATTERNS.md (cli.ts and index.ts modifications)
   </read_first>
   <action>
     1. Add --daemon-action option to src/cli.ts per D-02:
@@ -176,10 +170,10 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
 
 | Boundary | Description |
 |----------|-------------|
-| CLI → Daemon | User input (query, args) crosses into child process |
-| Daemon → PID File | Process writes PID to shared filesystem |
-| Daemon → Log File | Process writes logs to shared filesystem |
-| Daemon → Process Manager | External signal (SIGTERM) crosses into daemon |
+| CLI -> Daemon | User input (query, args) crosses into child process |
+| Daemon -> PID File | Process writes PID to shared filesystem |
+| Daemon -> Log File | Process writes logs to shared filesystem |
+| Daemon -> Process Manager | External signal (SIGTERM) crosses into daemon |
 
 ## STRIDE Threat Register
 
@@ -192,8 +186,8 @@ Output: daemon.ts module, CLI integration, daemon integration tests.
 </threat_model>
 
 <verification>
-1. `bun test test/integration/daemon.test.ts` — all tests pass
-2. `bun run typecheck` — no TypeScript errors
+1. `bun test test/integration/daemon.test.ts` -- all tests pass
+2. `bun run typecheck` -- no TypeScript errors
 3. Manual verification: `bun run src/cli.ts --query test --daemon` starts daemon, prints PID, parent exits
 4. Manual verification: `bun run src/cli.ts --daemon-action stop` stops daemon
 5. PID file (.daemon.pid) created and deleted on clean exit
@@ -214,8 +208,6 @@ Create `.planning/phases/04-daemon-validation/04-01-SUMMARY.md` when done
 </output>
 
 ---
-
-## Plan 04-02: Test Suite
 
 ---
 phase: 04-daemon-validation
@@ -263,10 +255,10 @@ must_haves:
     - test/fixtures/graphql-response.json
     - bunfig.toml
   key_links:
-    - "test/unit/ → src/*.ts (unit test imports)"
-    - "test/integration/ → src/*.ts (integration test mocks)"
-    - "test/e2e/ → test/fixtures/ (fixture data loading)"
-    - "bunfig.toml → bun test (coverage thresholds)"
+    - "test/unit/ -> src/*.ts (unit test imports)"
+    - "test/integration/ -> src/*.ts (integration test mocks)"
+    - "test/e2e/ -> test/fixtures/ (fixture data loading)"
+    - "bunfig.toml -> bun test (coverage thresholds)"
 ---
 
 <objective>
@@ -298,6 +290,7 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
 @tests/extractor.test.ts
 @tests/config.test.ts
 @tests/cli.test.ts
+@tests/scraper.test.ts
 </context>
 
 <tasks>
@@ -310,10 +303,10 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
     - src/config.ts (loadConfig, resolvePreset function signatures)
     - src/output.ts (generateOutputPath, saveUrlsToFile, createIncrementalSaver)
     - src/webhook.ts (resolveEndpoint, notifyWebhook)
-    - tests/extractor.test.ts (existing test patterns)
-    - tests/config.test.ts (existing test patterns)
-    - src/output.test.ts (existing test patterns)
-    - src/webhook.test.ts (existing test patterns)
+    - tests/extractor.test.ts (existing test patterns -- 10 test cases)
+    - tests/config.test.ts (existing test patterns -- 12 test cases)
+    - src/output.test.ts (existing test patterns -- 16 test cases)
+    - src/webhook.test.ts (existing test patterns -- 16 source verification tests)
   </read_first>
   <action>
     1. Create test/unit/extractor.test.ts per TEST-01:
@@ -333,7 +326,7 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
        - Keep temp directory isolation pattern (beforeEach/afterEach with /tmp/)
        - Add tests for edge cases: empty URLs set, special characters in query
     4. Create test/unit/webhook.test.ts:
-       - Migrate all tests from src/webhook.test.ts
+       - Migrate all tests from src/webhook.test.ts (source verification tests)
        - Update import paths to '../../src/webhook.ts'
        - Add tests for resolveEndpoint with different preset formats
        - Add tests for notifyWebhook error handling (D-16: never crashes scraper)
@@ -342,7 +335,7 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
        - Add unit tests for isProcessRunning with mock process.kill
        - Add unit tests for setupShutdownHandler (mock process.on)
        - Use temp directories for PID file operations (D-17)
-    6. Run `bun test test/unit/` — all tests must pass
+    6. Run `bun test test/unit/` -- all tests must pass
   </action>
   <verify>
     <automated>bun test test/unit/</automated>
@@ -366,8 +359,8 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
     - src/cli.ts (argument parsing logic)
     - src/index.ts (main pipeline function)
     - src/webhook.ts (notifyWebhook with HTTP/HTTPS)
-    - tests/cli.test.ts (existing integration test patterns)
-    - tests/scraper.test.ts (existing mock.module patterns)
+    - tests/cli.test.ts (existing integration test patterns -- 13 test cases)
+    - tests/scraper.test.ts (existing mock.module patterns -- 10 test cases)
     - src/extractor.ts (data shape for fixtures)
   </read_first>
   <action>
@@ -389,17 +382,17 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
        - Mock browser module (cloakbrowser launch)
        - Create mock page with fixture data injection
        - Load test/fixtures/graphql-response.json
-       - Test full pipeline: args → config → browser → extraction → output
+       - Test full pipeline: args -> config -> browser -> extraction -> output
        - Verify extracted URLs match fixture data
        - Test graceful shutdown during scraping
     4. Create test/fixtures/graphql-response.json:
        - Match data shape from src/extractor.ts lines 10-29
-       - Include nested edges → node → sponsored_item → page_profile_uri structure
+       - Include nested edges -> node -> sponsored_item -> page_profile_uri structure
        - Include multiple profile URLs for deduplication testing
        - Include edge cases: empty edges, missing fields, extra data
     5. Create bunfig.toml for coverage configuration per D-16:
        - [test] coverageThreshold = { line = 0.7, function = 0.7, statement = 0.7 }
-    6. Run `bun test --coverage` — all tests pass with 70% coverage
+    6. Run `bun test --coverage` -- all tests pass with 70% coverage
   </action>
   <verify>
     <automated>bun test --coverage</automated>
@@ -422,9 +415,9 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
 
 | Boundary | Description |
 |----------|-------------|
-| Test → Source | Test imports source modules directly |
-| Test → Mock | Test replaces real dependencies with mocks |
-| Fixture → Test | External JSON data loaded into test context |
+| Test -> Source | Test imports source modules directly |
+| Test -> Mock | Test replaces real dependencies with mocks |
+| Fixture -> Test | External JSON data loaded into test context |
 
 ## STRIDE Threat Register
 
@@ -436,11 +429,11 @@ Output: Complete test suite in test/unit/, test/integration/, test/e2e/ with fix
 </threat_model>
 
 <verification>
-1. `bun test` — all tests pass
-2. `bun test --coverage` — coverage meets 70% threshold
-3. `bun test test/unit/` — unit tests pass
-4. `bun test test/integration/` — integration tests pass
-5. `bun test test/e2e/` — E2E tests pass
+1. `bun test` -- all tests pass
+2. `bun test --coverage` -- coverage meets 70% threshold
+3. `bun test test/unit/` -- unit tests pass
+4. `bun test test/integration/` -- integration tests pass
+5. `bun test test/e2e/` -- E2E tests pass
 6. No tests write to production output/ directory (D-17)
 7. Test files are in test/ directory structure per D-13, D-14
 </verification>
