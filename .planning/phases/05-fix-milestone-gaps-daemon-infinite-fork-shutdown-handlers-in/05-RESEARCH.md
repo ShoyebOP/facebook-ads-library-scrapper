@@ -329,17 +329,15 @@ export async function runScraper(
 |---|-------|---------|---------------|
 | (none) | — | — | — |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
 1. **Should proxy URL format validation be added?**
-   - What we know: CONTEXT.md D-14 mentions fixing `--proxy` validation for missing value
-   - What's unclear: Whether to also validate URL format (HTTP/SOCKS5 scheme)
-   - Recommendation: Add basic scheme check (starts with http://, https://, socks5://) — low effort, high value
+   - RESOLVED: No — D-14 only requires checking for missing value (empty string). Format validation (HTTP/SOCKS5 scheme) is deferred to a future phase. Keep the fix minimal.
 
 2. **Should shutdown handlers be wired for non-daemon mode too?**
-   - What we know: CONTEXT.md D-08 says only wire when `SCRAPER_DAEMON_CHILD` is set
-   - What's unclear: Whether foreground runs also need graceful shutdown
-   - Recommendation: Follow CONTEXT.md — only daemon mode gets shutdown handlers (foreground runs can use Ctrl+C safely)
+   - RESOLVED: No — D-08 explicitly requires only daemon mode (`SCRAPER_DAEMON_CHILD=1`). Foreground runs handle Ctrl+C via the OS default signal behavior.
+
+3. **D-16 (double log file cleanup bug):** Verified N/A — the old `scraper.js` with this bug was removed in Phase 01.1. The current TypeScript codebase does not have this issue.
 
 ## Validation Architecture
 
