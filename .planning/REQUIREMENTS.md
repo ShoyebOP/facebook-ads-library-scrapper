@@ -27,7 +27,7 @@ Requirements for initial release. Each maps to roadmap phases.
 - [ ] **SCRAPE-07**: Auto-scroll with adaptive timing (wait for network idle)
 - [ ] **SCRAPE-08**: DOM cleanup to prevent memory leaks
 - [ ] **SCRAPE-09**: Proxy support (HTTP/SOCKS5 with authentication)
-- [ ] **SCRAPE-10**: Graceful shutdown on SIGINT/SIGTERM
+- [x] **SCRAPE-10**: Graceful shutdown on SIGINT/SIGTERM
 
 ### Configuration
 
@@ -132,7 +132,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCRAPE-07 | Phase 2 | Pending |
 | SCRAPE-08 | Phase 2 | Pending |
 | SCRAPE-09 | Phase 2 | Pending |
-| SCRAPE-10 | Phase 2 | Pending |
+| SCRAPE-10 | Phase 2 | Complete |
 | ERROR-01 | Phase 2 | Pending |
 | ERROR-02 | Phase 2 | Pending |
 | ERROR-03 | Phase 2 | Pending |

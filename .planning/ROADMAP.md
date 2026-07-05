@@ -135,15 +135,16 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-05 |
 | 3. Output & Delivery | 2/2 | Complete   | 2026-07-05 |
 | 4. Daemon & Validation | 3/3 | Complete    | 2026-07-05 |
-| 5. Fix milestone gaps | 0/2 | Planned | - |
+| 5. Fix milestone gaps | 1/2 | In Progress|  |
 
 ### Phase 5: Fix milestone gaps: daemon infinite fork, shutdown handlers, incremental saver
 
 **Goal:** Fix critical bugs that prevent daemon mode from working: infinite fork loop, unhandled shutdown signals, and unused incremental saver that causes data loss on crashes
 **Requirements:** DAEMON-01, DAEMON-04, SCRAPE-10, OUTPUT-02
 **Depends on:** Phase 4
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
-- [ ] 05-01-PLAN.md — Daemon fork prevention (env var), CLI proxy validation, type prep
+
+- [x] 05-01-PLAN.md — Daemon fork prevention (env var), CLI proxy validation, type prep
 - [ ] 05-02-PLAN.md — Shutdown handler wiring, incremental saver integration
