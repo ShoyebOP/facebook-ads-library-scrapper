@@ -71,9 +71,9 @@ describe('src/ module exports', () => {
         expect(typeof mod.runScraper).toBe('function');
     });
 
-    it('src/output.ts exports saveOutput', async () => {
+    it('src/output.ts exports generateOutputPath', async () => {
         const mod = await import('../src/output');
-        expect(typeof mod.saveOutput).toBe('function');
+        expect(typeof mod.generateOutputPath).toBe('function');
     });
 
     it('src/index.ts exports main', async () => {

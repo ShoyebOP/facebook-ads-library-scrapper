@@ -25,6 +25,21 @@ export interface ScraperOptions {
     logger: Logger;
 }
 
+// --- Output options (D-01 to D-04) ---
+
+export interface OutputOptions {
+    query: string;
+    outputDir?: string;
+    logger: Logger;
+}
+
+// --- Incremental saver options (D-05 to D-06) ---
+
+export interface IncrementalSaverOptions {
+    outputFile: string;
+    saveInterval?: number;
+}
+
 // --- Error category (D-19) ---
 
 export type ErrorCategory =
