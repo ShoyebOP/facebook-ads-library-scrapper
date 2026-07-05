@@ -51,11 +51,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Daemon Mode
 
-- [ ] **DAEMON-01**: Daemon mode via child process forking
-- [ ] **DAEMON-02**: PID file management with flock-based locking
-- [ ] **DAEMON-03**: Proper logging to log file in daemon mode
-- [ ] **DAEMON-04**: Graceful shutdown handlers (SIGTERM, SIGINT)
-- [ ] **DAEMON-05**: State saving before exit
+- [x] **DAEMON-01**: Daemon mode via child process forking
+- [x] **DAEMON-02**: PID file management with flock-based locking
+- [x] **DAEMON-03**: Proper logging to log file in daemon mode
+- [x] **DAEMON-04**: Graceful shutdown handlers (SIGTERM, SIGINT)
+- [x] **DAEMON-05**: State saving before exit
 
 ### Error Handling
 
@@ -67,11 +67,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Testing
 
-- [ ] **TEST-01**: Unit tests for extraction logic
-- [ ] **TEST-02**: Unit tests for configuration parsing
-- [ ] **TEST-03**: Integration tests for CLI argument parsing
-- [ ] **TEST-04**: Integration tests for webhook notification
-- [ ] **TEST-05**: E2E tests for full scrape workflow (mocked browser)
+- [x] **TEST-01**: Unit tests for extraction logic
+- [x] **TEST-02**: Unit tests for configuration parsing
+- [x] **TEST-03**: Integration tests for CLI argument parsing
+- [x] **TEST-04**: Integration tests for webhook notification
+- [x] **TEST-05**: E2E tests for full scrape workflow (mocked browser)
 
 ## v2 Requirements
 
@@ -144,16 +144,16 @@ Which phases cover which requirements. Updated during roadmap creation.
 | WEBHOOK-01 | Phase 3 | Complete |
 | WEBHOOK-02 | Phase 3 | Complete |
 | WEBHOOK-03 | Phase 3 | Complete |
-| DAEMON-01 | Phase 4 | Pending |
-| DAEMON-02 | Phase 4 | Pending |
-| DAEMON-03 | Phase 4 | Pending |
-| DAEMON-04 | Phase 4 | Pending |
-| DAEMON-05 | Phase 4 | Pending |
-| TEST-01 | Phase 4 | Pending |
-| TEST-02 | Phase 4 | Pending |
-| TEST-03 | Phase 4 | Pending |
-| TEST-04 | Phase 4 | Pending |
-| TEST-05 | Phase 4 | Pending |
+| DAEMON-01 | Phase 4 | Complete |
+| DAEMON-02 | Phase 4 | Complete |
+| DAEMON-03 | Phase 4 | Complete |
+| DAEMON-04 | Phase 4 | Complete |
+| DAEMON-05 | Phase 4 | Complete |
+| TEST-01 | Phase 4 | Complete |
+| TEST-02 | Phase 4 | Complete |
+| TEST-03 | Phase 4 | Complete |
+| TEST-04 | Phase 4 | Complete |
+| TEST-05 | Phase 4 | Complete |
 
 **Coverage:**
 
