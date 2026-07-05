@@ -26,7 +26,7 @@ describe('webhook.ts', () => {
                 new URL('./webhook.ts', import.meta.url),
                 'utf-8',
             );
-            expect(src).toContain('Content-Type: application/json');
+            expect(src).toContain("'Content-Type': 'application/json'");
         });
 
         it('uses pRetry for retry logic', async () => {
@@ -67,7 +67,7 @@ describe('webhook.ts', () => {
                 new URL('./webhook.ts', import.meta.url),
                 'utf-8',
             );
-            expect(src).toMatch(/retries:\s*2/);
+            expect(src).toContain('DEFAULT_RETRIES = 2');
         });
 
         it('imports http and https modules', async () => {

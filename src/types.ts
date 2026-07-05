@@ -47,3 +47,21 @@ export type ErrorCategory =
     | 'permanent'
     | 'browser'
     | 'extraction';
+
+// --- Webhook payload (D-09, D-10) ---
+
+export interface WebhookPayload {
+    query: string;
+    outputFile: string;
+    count: number;
+}
+
+// --- Webhook options (D-11, D-12) ---
+
+export interface WebhookOptions {
+    url: string;
+    payload: WebhookPayload;
+    timeoutMs?: number;
+    retries?: number;
+    logger: Logger;
+}
