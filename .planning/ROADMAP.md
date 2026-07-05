@@ -14,7 +14,7 @@ Rewrite a monolithic 260-line Facebook Ads Library scraper into a modular, produ
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [x] **Phase 1: Foundation** - Bun-native TypeScript project setup, module structure, and preset-based configuration system (completed 2026-07-04)
-- [x] **Phase 2: Core Scraper Engine** - Anti-detection browser automation, GraphQL interception, profile URL extraction, and error handling (completed 2026-07-04)
+- [x] **Phase 2: Core Scraper Engine** - Anti-detection browser automation, GraphQL interception, profile URL extraction, and error handling (completed 2026-07-05)
 - [x] **Phase 3: Output & Delivery** - Timestamped JSON file output, incremental saving, and webhook notification system (completed 2026-07-05)
 - [ ] **Phase 4: Daemon & Validation** - Background daemon mode with PID management and comprehensive test suite
 
@@ -105,8 +105,8 @@ Plans:
 
 Plans:
 
-- [ ] 04-01: Daemon mode — child process forking, PID management, flock locking, signal handlers
-- [ ] 04-02: Test suite — unit tests (extraction, config), integration tests (CLI, webhook), E2E smoke test
+- [ ] 04-01-PLAN.md — Daemon mode: child process forking, PID management, flock locking, signal handlers
+- [ ] 04-02-PLAN.md — Test suite: unit tests (extraction, config), integration tests (CLI, webhook), E2E tests with fixtures
 
 ## Progress
 
@@ -116,6 +116,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete    | 2026-07-04 |
-| 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-04 |
+| 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-05 |
 | 3. Output & Delivery | 2/2 | Complete   | 2026-07-05 |
 | 4. Daemon & Validation | 0/2 | Not started | - |
