@@ -76,6 +76,16 @@ describe('src/ module exports', () => {
         expect(typeof mod.generateOutputPath).toBe('function');
     });
 
+    it('src/webhook.ts exports notifyWebhook', async () => {
+        const mod = await import('../src/webhook');
+        expect(typeof mod.notifyWebhook).toBe('function');
+    });
+
+    it('src/webhook.ts exports resolveEndpoint', async () => {
+        const mod = await import('../src/webhook');
+        expect(typeof mod.resolveEndpoint).toBe('function');
+    });
+
     it('src/index.ts exports main', async () => {
         const mod = await import('../src/index');
         expect(typeof mod.main).toBe('function');
