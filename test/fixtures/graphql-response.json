@@ -1,0 +1,38 @@
+{
+  "data": {
+    "ad_library_results": {
+      "edges": [
+        {
+          "node": {
+            "sponsored_item": {
+              "page_profile_uri": "https://facebook.com/profile/advertiser1",
+              "ad_archive_info": {
+                "body": "Sample ad body text 1"
+              }
+            }
+          }
+        },
+        {
+          "node": {
+            "sponsored_item": {
+              "page_profile_uri": "https://facebook.com/profile/advertiser2",
+              "ad_archive_info": {
+                "body": "Sample ad body text 2"
+              }
+            }
+          }
+        },
+        {
+          "node": {
+            "sponsored_item": {
+              "page_profile_uri": "https://facebook.com/profile/advertiser3",
+              "ad_archive_info": {
+                "body": "Sample ad body text 3"
+              }
+            }
+          }
+        }
+      ]
+    }
+  }
+}
