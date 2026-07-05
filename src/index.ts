@@ -33,8 +33,8 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     // D-20: create structured logger
     const logger = createLogger();
 
-    // D-04: If --daemon flag, fork child process and exit parent
-    if (argv.daemon) {
+    // D-04: If --daemon flag (and not already child), fork child process and exit parent
+    if (argv.daemon && process.env.SCRAPER_DAEMON_CHILD !== '1') {
         const { startDaemon } = await import('./daemon.js');
         const daemonArgv = process.argv.slice(2);
         const pid = await startDaemon(argv.query, daemonArgv, logger);

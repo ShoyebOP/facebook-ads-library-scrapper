@@ -87,6 +87,13 @@ if (argv.maxNoNewScrolls !== undefined) {
     }
 }
 
+// --- Validate proxy value ---
+
+if (argv.proxy !== undefined && argv.proxy === '') {
+    console.error('Error: --proxy requires a URL value');
+    process.exit(1);
+}
+
 // --- Handle daemon actions ---
 
 if (argv.daemonAction) {

@@ -74,10 +74,11 @@ export async function startDaemon(
         // D-12: Clear daemon log on start
         fs.writeFileSync(LOG_FILE, '');
 
-        // D-04: Fork detached child process
+        // D-04: Fork detached child process with env marker to prevent infinite fork
         const child = fork(process.argv[1], argv, {
             detached: true,
             stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
+            env: { ...process.env, SCRAPER_DAEMON_CHILD: '1' },
         });
 
         // D-04: Write PID and release lock
