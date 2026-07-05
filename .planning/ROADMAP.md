@@ -45,11 +45,13 @@ Plans:
 **Goal:** CLI usability improvement — make the scraper runnable from project root, add custom ad library URL per preset, clean up legacy files, and create comprehensive documentation
 **Requirements**: SETUP-01, CONFIG-01, CONFIG-05
 **Depends on:** Phase 1
-**Plans:** 1 plan
+**Plans:** 1/1 plans complete
 
 Plans:
 
-- [ ] 01.1-01-PLAN.md — Entry point setup, config schema extension, pipeline wiring, legacy cleanup, and README
+- [ ] 01.1-PLAN.md
+
+- [x] 01.1-01-PLAN.md — Entry point setup, config schema extension, pipeline wiring, legacy cleanup, and README
 
 ### Phase 2: Core Scraper Engine
 
@@ -129,7 +131,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete    | 2026-07-04 |
-| 1.1. Entry Point & Cleanup | 0/1 | Planned | — |
+| 1.1. Entry Point & Cleanup | 1/1 | Complete   | 2026-07-05 |
 | 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-05 |
 | 3. Output & Delivery | 2/2 | Complete   | 2026-07-05 |
 | 4. Daemon & Validation | 3/3 | Complete    | 2026-07-05 |
