@@ -518,17 +518,17 @@ coverageThreshold = { line = 0.7, function = 0.7, statement = 0.7 }
 
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Does `proper-lockfile` work with Bun?**
+1. **Does `proper-lockfile` work with Bun?** (RESOLVED)
    - What we know: proper-lockfile is a Node.js package with 17M+ weekly downloads
    - What's unclear: Bun compatibility — Bun has Node.js API compatibility but may have edge cases
-   - Recommendation: Test during Plan 04-01; fallback to manual flock with fs.flock() if issues
+   - Resolution: Use proper-lockfile with fallback to manual fs.flock() if Bun incompatible. Test during Plan 04-01 Task 1.
 
-2. **Should daemon module be separate file or part of index.ts?**
+2. **Should daemon module be separate file or part of index.ts?** (RESOLVED)
    - What we know: Current architecture has index.ts as pipeline orchestrator
    - What's unclear: Whether daemon logic belongs in index.ts or separate daemon.ts
-   - Recommendation: Create separate daemon.ts per D-13 (testability) and clean separation
+   - Resolution: Create separate daemon.ts per RECOMMENDATION (testability, clean separation, D-13). CLI integration in src/cli.ts and src/index.ts.
 
 ## Environment Availability
 
