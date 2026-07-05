@@ -76,12 +76,12 @@ Plans:
   3. Webhook POST is sent to configured endpoint with JSON payload on scrape completion
   4. Webhook failure does not crash the scraper or prevent file output
 
-**Plans**: TBD
+**Plans:** 2 plans
 
 Plans:
 
-- [ ] 03-01: File output — timestamped JSON writer, output directory creation, incremental saving
-- [ ] 03-02: Webhook output — POST notification, endpoint configuration via presets, error isolation
+- [ ] 03-01-PLAN.md — Output module: types, timestamped JSON writer, directory creation, incremental saving, tests
+- [ ] 03-02-PLAN.md — Webhook module: HTTP POST with retry, pipeline wiring, integration tests
 
 ### Phase 4: Daemon & Validation
 
@@ -97,7 +97,7 @@ Plans:
   4. Unit tests pass for extraction logic and configuration parsing
   5. Integration tests validate CLI argument parsing and webhook notification behavior
 
-**Plans**: TBD
+**Plans:** 2/2 plans
 
 Plans:
 
@@ -113,5 +113,5 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 |-------|----------------|--------|-----------|
 | 1. Foundation | 2/2 | Complete    | 2026-07-04 |
 | 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-04 |
-| 3. Output & Delivery | 0/2 | Not started | - |
+| 3. Output & Delivery | 0/2 | Planned | - |
 | 4. Daemon & Validation | 0/2 | Not started | - |
