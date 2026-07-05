@@ -2,8 +2,14 @@
 
 import { loadConfig, resolvePreset } from './config.js';
 import { createLogger } from './logger.js';
+import {
+    ensureOutputDir,
+    generateOutputPath,
+    saveUrlsToFile,
+} from './output.js';
 import { runScraper } from './scraper.js';
 import type { ScraperOptions } from './types.js';
+import { notifyWebhook, resolveEndpoint } from './webhook.js';
 
 // --- CLI argument types ---
 
@@ -29,9 +35,11 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     const config = await loadConfig();
 
     // Resolve preset if provided
+    let webhookUrl: string | null = null;
     if (argv.preset) {
         const preset = resolvePreset(config, argv.preset);
-        logger.info(`Using preset: ${argv.preset} (${preset.callback})`);
+        webhookUrl = resolveEndpoint(preset);
+        logger.info(`Using preset: ${argv.preset} (${webhookUrl})`);
     }
 
     // Construct ScraperOptions from CliArgs
@@ -51,6 +59,21 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     logger.info(
         `Scraping complete: ${urls.size} unique profile URLs collected`,
     );
+
+    // D-07: save file BEFORE webhook notification (data safety)
+    const outputFile = generateOutputPath({ query: argv.query, logger });
+    await ensureOutputDir('output');
+    saveUrlsToFile(outputFile, urls);
+    logger.info(`Saved ${urls.size} unique profile URLs to ${outputFile}`);
+
+    // D-09: send webhook notification if preset has callback URL
+    if (webhookUrl) {
+        await notifyWebhook({
+            url: webhookUrl,
+            payload: { query: argv.query, outputFile, count: urls.size },
+            logger,
+        });
+    }
 
     return urls;
 }

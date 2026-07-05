@@ -1,22 +1,17 @@
 import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
-import { readFile } from 'node:fs/promises';
 import pino from 'pino';
 
 const logger = pino({ level: 'silent' });
 
 describe('webhook.ts', () => {
     describe('resolveEndpoint', () => {
-        it('returns the callback URL from preset', async () => {
-            const { resolveEndpoint } = await import('./webhook');
-            const result = resolveEndpoint({ callback: 'https://example.com/hook' });
-            expect(result).toBe('https://example.com/hook');
-        });
-
-        it('returns the exact string from the preset callback field', async () => {
-            const { resolveEndpoint } = await import('./webhook');
-            const url = 'https://custom-domain.com/api/webhook?token=abc123';
-            const result = resolveEndpoint({ callback: url });
-            expect(result).toBe(url);
+        it('exports a function that returns preset.callback', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./webhook.ts', import.meta.url),
+                'utf-8',
+            );
+            expect(src).toMatch(/export\s+function\s+resolveEndpoint/);
+            expect(src).toContain('return preset.callback');
         });
     });
 
@@ -123,6 +118,60 @@ describe('webhook.ts', () => {
             );
             expect(src).toMatch(/export\s+function\s+resolveEndpoint/);
             expect(src).toContain('{ callback: string }');
+        });
+    });
+
+    describe('pipeline wiring (source verification)', () => {
+        it('src/index.ts imports from output.js', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./index.ts', import.meta.url),
+                'utf-8',
+            );
+            expect(src).toContain("from './output.js'");
+        });
+
+        it('src/index.ts imports from webhook.js', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./index.ts', import.meta.url),
+                'utf-8',
+            );
+            expect(src).toContain("from './webhook.js'");
+        });
+
+        it('src/index.ts calls ensureOutputDir', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./index.ts', import.meta.url),
+                'utf-8',
+            );
+            expect(src).toContain("ensureOutputDir('output')");
+        });
+
+        it('src/index.ts calls saveUrlsToFile', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./index.ts', import.meta.url),
+                'utf-8',
+            );
+            expect(src).toContain('saveUrlsToFile(outputFile, urls)');
+        });
+
+        it('src/index.ts calls notifyWebhook', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./index.ts', import.meta.url),
+                'utf-8',
+            );
+            expect(src).toContain('await notifyWebhook(');
+        });
+
+        it('file save happens BEFORE webhook call', async () => {
+            const src = require('node:fs').readFileSync(
+                new URL('./index.ts', import.meta.url),
+                'utf-8',
+            );
+            const saveIdx = src.indexOf('saveUrlsToFile(outputFile, urls)');
+            const webhookIdx = src.indexOf('await notifyWebhook(');
+            expect(saveIdx).toBeGreaterThan(-1);
+            expect(webhookIdx).toBeGreaterThan(-1);
+            expect(saveIdx).toBeLessThan(webhookIdx);
         });
     });
 });

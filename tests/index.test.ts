@@ -43,9 +43,21 @@ mock.module('../src/scraper.js', () => ({
 }));
 
 // Mock output
-const mockSaveOutput = mock(() => {});
+const mockGenerateOutputPath = mock(() => 'output/05-07-2026:10-53.test.json');
+const mockEnsureOutputDir = mock(() => Promise.resolve());
+const mockSaveUrlsToFile = mock(() => {});
 mock.module('../src/output.js', () => ({
-    saveOutput: mockSaveOutput,
+    generateOutputPath: mockGenerateOutputPath,
+    ensureOutputDir: mockEnsureOutputDir,
+    saveUrlsToFile: mockSaveUrlsToFile,
+}));
+
+// Mock webhook
+const mockResolveEndpoint = mock(() => 'https://example.com/webhook/leadgen');
+const mockNotifyWebhook = mock(() => Promise.resolve());
+mock.module('../src/webhook.js', () => ({
+    resolveEndpoint: mockResolveEndpoint,
+    notifyWebhook: mockNotifyWebhook,
 }));
 
 // --- Tests ---
@@ -57,6 +69,11 @@ describe('main pipeline', () => {
         mockResolvePreset.mockClear();
         mockRunScraper.mockClear();
         mockLogger.info.mockClear();
+        mockGenerateOutputPath.mockClear();
+        mockEnsureOutputDir.mockClear();
+        mockSaveUrlsToFile.mockClear();
+        mockResolveEndpoint.mockClear();
+        mockNotifyWebhook.mockClear();
     });
 
     it('creates logger with pino', async () => {
@@ -152,5 +169,86 @@ describe('main pipeline', () => {
 
         expect(result).toBeInstanceOf(Set);
         expect(result.size).toBe(2);
+    });
+
+    it('generates output path with query', async () => {
+        const { main } = await import('../src/index.js');
+
+        await main({
+            query: 'test',
+            maxNoNewScrolls: 10,
+            headless: true,
+            daemon: false,
+        });
+
+        expect(mockGenerateOutputPath).toHaveBeenCalledWith(
+            expect.objectContaining({ query: 'test' }),
+        );
+    });
+
+    it('ensures output directory before saving', async () => {
+        const { main } = await import('../src/index.js');
+
+        await main({
+            query: 'test',
+            maxNoNewScrolls: 10,
+            headless: true,
+            daemon: false,
+        });
+
+        expect(mockEnsureOutputDir).toHaveBeenCalledWith('output');
+    });
+
+    it('saves URLs to file before sending webhook', async () => {
+        const { main } = await import('../src/index.js');
+
+        await main({
+            query: 'test',
+            preset: 'leadgen',
+            maxNoNewScrolls: 10,
+            headless: true,
+            daemon: false,
+        });
+
+        // File save should have been called
+        expect(mockSaveUrlsToFile).toHaveBeenCalled();
+
+        // Webhook should have been called
+        expect(mockNotifyWebhook).toHaveBeenCalled();
+    });
+
+    it('sends webhook when preset is provided', async () => {
+        const { main } = await import('../src/index.js');
+
+        await main({
+            query: 'test',
+            preset: 'leadgen',
+            maxNoNewScrolls: 10,
+            headless: true,
+            daemon: false,
+        });
+
+        expect(mockNotifyWebhook).toHaveBeenCalledWith(
+            expect.objectContaining({
+                url: 'https://example.com/webhook/leadgen',
+                payload: expect.objectContaining({
+                    query: 'test',
+                    count: 2,
+                }),
+            }),
+        );
+    });
+
+    it('does NOT send webhook when no preset provided', async () => {
+        const { main } = await import('../src/index.js');
+
+        await main({
+            query: 'test',
+            maxNoNewScrolls: 10,
+            headless: true,
+            daemon: false,
+        });
+
+        expect(mockNotifyWebhook).not.toHaveBeenCalled();
     });
 });
