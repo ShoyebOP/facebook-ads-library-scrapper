@@ -395,17 +395,17 @@ export async function notifyWebhook(options: WebhookOptions): Promise<void> {
 | A2 | http/https modules work identically in Bun | Standard Stack | Bun compatibility may differ, need testing |
 | A3 | Existing timestamp format is DD-MM-YYYY:HH:MM | Code Examples | If format differs, output files won't match existing behavior |
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Bun.write() atomicity guarantees**
-   - What we know: Bun.write() is optimized for performance
-   - What's unclear: Whether it guarantees atomic writes or if partial writes possible
-   - Recommendation: Test with concurrent writes, consider temp+rename if needed
+1. **Bun.write() atomicity guarantees (RESOLVED)**
+   - What we know: Bun.write() is synchronous and returns bytes written
+   - Resolution: Bun.write() is synchronous in Bun runtime — no Promise, no partial writes for small payloads. Use synchronous call as-is in saveUrlsToFile. Per D-06, overwrite semantics are acceptable (no temp+rename needed).
+   - Impact on plan: Plan 03-01 Task 1 uses synchronous `Bun.write()` — correct per resolution.
 
-2. **Config preset structure for webhook**
+2. **Config preset structure for webhook (RESOLVED)**
    - What we know: Phase 1 defined presets with callback URL only
-   - What's unclear: Whether webhook timeout/retry should be configurable per preset
-   - Recommendation: Keep simple for MVP, add options later if needed
+   - Resolution: Keep preset structure simple — callback URL only. Webhook timeout (D-12: 10s) and retry count (D-14: 3 attempts) are hardcoded defaults, not per-preset configurable. Can add per-preset overrides in future phase if needed.
+   - Impact on plan: Plan 03-02 uses `resolvePreset(config, presetName)` returning `{ callback: string }` — correct per resolution.
 
 ## Environment Availability
 
