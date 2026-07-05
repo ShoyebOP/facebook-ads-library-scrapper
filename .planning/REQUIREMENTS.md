@@ -45,9 +45,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Webhook
 
-- [ ] **WEBHOOK-01**: Webhook notification on completion (POST JSON payload)
-- [ ] **WEBHOOK-02**: Webhook endpoints configurable via presets
-- [ ] **WEBHOOK-03**: Webhook error handling (don't fail scraper if webhook fails)
+- [x] **WEBHOOK-01**: Webhook notification on completion (POST JSON payload)
+- [x] **WEBHOOK-02**: Webhook endpoints configurable via presets
+- [x] **WEBHOOK-03**: Webhook error handling (don't fail scraper if webhook fails)
 
 ### Daemon Mode
 
@@ -141,9 +141,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | OUTPUT-01 | Phase 3 | Pending |
 | OUTPUT-02 | Phase 3 | Pending |
 | OUTPUT-03 | Phase 3 | Pending |
-| WEBHOOK-01 | Phase 3 | Pending |
-| WEBHOOK-02 | Phase 3 | Pending |
-| WEBHOOK-03 | Phase 3 | Pending |
+| WEBHOOK-01 | Phase 3 | Complete |
+| WEBHOOK-02 | Phase 3 | Complete |
+| WEBHOOK-03 | Phase 3 | Complete |
 | DAEMON-01 | Phase 4 | Pending |
 | DAEMON-02 | Phase 4 | Pending |
 | DAEMON-03 | Phase 4 | Pending |
