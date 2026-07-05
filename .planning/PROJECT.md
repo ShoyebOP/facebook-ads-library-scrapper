@@ -19,22 +19,27 @@ Reliably extract Facebook Ads Library profile URLs at scale without detection, d
 - ✓ Webhook notification on completion — existing
 - ✓ Daemon mode for background execution — existing
 
+### Validated (continued)
+
+- ✓ Rewrite in Bun-native TypeScript — Phase 1
+- ✓ Modularize into separate modules — Phase 1
+- ✓ Implement preset-based configuration system — Phase 1
+- ✓ Add comprehensive cloakbrowser humanization — Phase 2
+- ✓ Add structured logging framework — Phase 2
+- ✓ Add retry logic with exponential backoff — Phase 2
+- ✓ Fix double log file cleanup bug — Phase 2
+- ✓ Fix missing proxy argument validation — Phase 5
+- ✓ Improve daemon mode reliability — Phase 4, Phase 5
+- ✓ Add full test suite — Phase 4
+- ✓ Add input validation for all CLI arguments — Phase 2
+- ✓ Remove hardcoded configuration — Phase 1
+- ✓ Add incremental URL saving — Phase 5
+- ✓ Fix daemon infinite fork loop — Phase 5
+- ✓ Add graceful shutdown handlers — Phase 5
+
 ### Active
 
-- [ ] Rewrite in Bun-native TypeScript (remove Node.js compatibility)
-- [ ] Modularize into separate modules (CLI, browser, scraper, webhook, storage)
-- [ ] Implement preset-based configuration system (single arg → config.json presets)
-- [ ] Add comprehensive cloakbrowser humanization (mouse movements, scrolling, typing)
-- [ ] Add structured logging framework with levels
-- [ ] Add retry logic with exponential backoff for transient errors
-- [ ] Fix double log file cleanup bug
-- [ ] Fix missing proxy argument validation
 - [ ] Fix silent error swallowing
-- [ ] Improve daemon mode reliability (proper logging, PID management, restart)
-- [ ] Add full test suite (unit, integration, E2E)
-- [ ] Add input validation for all CLI arguments
-- [ ] Remove hardcoded configuration (webhook URLs, country code, callbacks)
-- [ ] Add incremental URL saving (periodic writes)
 - [ ] Add adaptive scroll timing (wait for network idle)
 - [ ] Add configurable DOM selectors with fallbacks
 - [ ] Add webhook authentication via HMAC signatures
@@ -110,4 +115,4 @@ This document evolves at phase transitions and milestone boundaries.
 4. Update Context with current state
 
 ---
-*Last updated: 2026-07-03 after initialization*
+*Last updated: 2026-07-06 after Phase 5*
