@@ -76,6 +76,10 @@ None yet.
 - Research flag: cloakbrowser + Bun compatibility needs validation during Phase 2
 - Research flag: Current Facebook GraphQL response schema needs capture during Phase 2 planning
 
+### Roadmap Evolution
+
+- Phase 5 added: check the phase 1 requirements and fix the gaps that has not been completed
+
 ## Deferred Items
 
 Items acknowledged and carried forward from previous milestone close:
