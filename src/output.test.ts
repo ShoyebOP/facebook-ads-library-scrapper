@@ -1,8 +1,8 @@
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
-import pino from 'pino';
-import { mkdir, rm, readFile } from 'node:fs/promises';
+import { afterEach, beforeEach, describe, expect, it } from 'bun:test';
 import { existsSync } from 'node:fs';
+import { mkdir, readFile, rm } from 'node:fs/promises';
 import { join } from 'node:path';
+import pino from 'pino';
 
 const logger = pino({ level: 'silent' });
 const tmpDir = '/tmp/output-test';
@@ -32,22 +32,31 @@ describe('output.ts', () => {
 
         it('replaces spaces with underscores in query', async () => {
             const mod = await import('./output');
-            const result = mod.generateOutputPath({ query: 'real estate', logger });
+            const result = mod.generateOutputPath({
+                query: 'real estate',
+                logger,
+            });
             expect(result).toContain('real_estate');
         });
 
         it('uses custom outputDir when provided', async () => {
             const mod = await import('./output');
-            const result = mod.generateOutputPath({ query: 'test', outputDir: tmpDir, logger });
+            const result = mod.generateOutputPath({
+                query: 'test',
+                outputDir: tmpDir,
+                logger,
+            });
             expect(result).toContain(tmpDir);
         });
 
         it('timestamp matches DD-MM-YYYY:HH:MM pattern', async () => {
             const mod = await import('./output');
             const result = mod.generateOutputPath({ query: 'test', logger });
-            const filename = result.split('/').pop()!;
+            const filename = result.split('/').pop();
             // Pattern: DD-MM-YYYY:HH:MM.test.json
-            expect(filename).toMatch(/^\d{2}-\d{2}-\d{4}:\d{2}-\d{2}\.test\.json$/);
+            expect(filename).toMatch(
+                /^\d{2}-\d{2}-\d{4}:\d{2}-\d{2}\.test\.json$/,
+            );
         });
     });
 
@@ -98,7 +107,10 @@ describe('output.ts', () => {
         it('does NOT save when new URLs below threshold', async () => {
             const mod = await import('./output');
             const filePath = join(tmpDir, 'incr.json');
-            const saver = mod.createIncrementalSaver({ outputFile: filePath, saveInterval: 3 });
+            const saver = mod.createIncrementalSaver({
+                outputFile: filePath,
+                saveInterval: 3,
+            });
 
             saver(new Set(['https://fb.com/a']));
 
@@ -108,7 +120,10 @@ describe('output.ts', () => {
         it('saves when accumulated URLs reach threshold', async () => {
             const mod = await import('./output');
             const filePath = join(tmpDir, 'incr.json');
-            const saver = mod.createIncrementalSaver({ outputFile: filePath, saveInterval: 2 });
+            const saver = mod.createIncrementalSaver({
+                outputFile: filePath,
+                saveInterval: 2,
+            });
 
             saver(new Set(['https://fb.com/a', 'https://fb.com/b']));
 
@@ -122,7 +137,10 @@ describe('output.ts', () => {
         it('does NOT re-save when no new URLs added', async () => {
             const mod = await import('./output');
             const filePath = join(tmpDir, 'incr.json');
-            const saver = mod.createIncrementalSaver({ outputFile: filePath, saveInterval: 1 });
+            const saver = mod.createIncrementalSaver({
+                outputFile: filePath,
+                saveInterval: 1,
+            });
 
             saver(new Set(['https://fb.com/a']));
             const content1 = await readFile(filePath, 'utf-8');
@@ -137,7 +155,6 @@ describe('output.ts', () => {
 
     describe('source verification', () => {
         it('src/output.ts uses Bun.write for file I/O', async () => {
-            const mod = await import('./output');
             const src = require('node:fs').readFileSync(
                 new URL('./output.ts', import.meta.url),
                 'utf-8',
