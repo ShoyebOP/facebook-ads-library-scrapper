@@ -154,9 +154,9 @@ Plans:
 **Goal:** Fix all v1.0 milestone gaps — resolve 4 integration warnings, wire non-daemon shutdown, consolidate tests, clean dead code, implement --env-file, and create retroactive verification for 10 orphaned requirements
 **Requirements**: SETUP-02, SETUP-05, SETUP-06, CONFIG-05, SCRAPE-01, SCRAPE-02, OUTPUT-01, OUTPUT-03, WEBHOOK-01, WEBHOOK-02, WEBHOOK-03, DAEMON-04, SCRAPE-10
 **Depends on:** Phase 5
-**Plans:** 2 plans
+**Plans:** 1/2 plans executed
 
 Plans:
 
-- [ ] 06-01-PLAN.md — Fix integration warnings (dependency placement, module resolution, shutdown wiring, dead code, --callback override)
+- [x] 06-01-PLAN.md — Fix integration warnings (dependency placement, module resolution, shutdown wiring, dead code, --callback override)
 - [ ] 06-02-PLAN.md — Test consolidation, dead types cleanup, --env-file implementation, retroactive verification documentation
