@@ -18,8 +18,8 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Core Scraper
 
-- [ ] **SCRAPE-01**: CLI argument parsing with yargs (query, proxy, max-urls, headless, daemon)
-- [ ] **SCRAPE-02**: Input validation for all CLI arguments with clear error messages
+- [x] **SCRAPE-01**: CLI argument parsing with yargs (query, proxy, max-urls, headless, daemon)
+- [x] **SCRAPE-02**: Input validation for all CLI arguments with clear error messages
 - [ ] **SCRAPE-03**: cloakbrowser integration with stealth configuration
 - [ ] **SCRAPE-04**: Humanization enabled (humanize: true, humanPreset: 'careful')
 - [ ] **SCRAPE-05**: GraphQL response interception via page.on('response')
@@ -39,9 +39,9 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Output
 
-- [ ] **OUTPUT-01**: JSON output to timestamped files (DD-MM-YYYY:HH:MM.query.json)
+- [x] **OUTPUT-01**: JSON output to timestamped files (DD-MM-YYYY:HH:MM.query.json)
 - [x] **OUTPUT-02**: Incremental URL saving (every 100 new URLs or on crash)
-- [ ] **OUTPUT-03**: Output directory creation if not exists
+- [x] **OUTPUT-03**: Output directory creation if not exists
 
 ### Webhook
 
@@ -123,8 +123,8 @@ Which phases cover which requirements. Updated during roadmap creation.
 | CONFIG-03 | Phase 1 | Complete |
 | CONFIG-04 | Phase 1 | Complete |
 | CONFIG-05 | Phase 1 | Complete |
-| SCRAPE-01 | Phase 2 | Pending |
-| SCRAPE-02 | Phase 2 | Pending |
+| SCRAPE-01 | Phase 2 | Complete |
+| SCRAPE-02 | Phase 2 | Complete |
 | SCRAPE-03 | Phase 2 | Pending |
 | SCRAPE-04 | Phase 2 | Pending |
 | SCRAPE-05 | Phase 2 | Pending |
@@ -138,9 +138,9 @@ Which phases cover which requirements. Updated during roadmap creation.
 | ERROR-03 | Phase 2 | Pending |
 | ERROR-04 | Phase 2 | Pending |
 | ERROR-05 | Phase 2 | Pending |
-| OUTPUT-01 | Phase 3 | Pending |
+| OUTPUT-01 | Phase 3 | Complete |
 | OUTPUT-02 | Phase 3 | Complete |
-| OUTPUT-03 | Phase 3 | Pending |
+| OUTPUT-03 | Phase 3 | Complete |
 | WEBHOOK-01 | Phase 3 | Complete |
 | WEBHOOK-02 | Phase 3 | Complete |
 | WEBHOOK-03 | Phase 3 | Complete |
@@ -160,6 +160,7 @@ Which phases cover which requirements. Updated during roadmap creation.
 - v1 requirements: 42 total
 - Mapped to phases: 42
 - Unmapped: 0 ✓
+- Satisfied: 42/42 ✓
 
 ---
 *Requirements defined: 2026-07-03*
