@@ -1,7 +1,7 @@
 // --- Output handler — timestamped JSON file writing with incremental saves ---
 
 import { mkdir } from 'node:fs/promises';
-import type { OutputOptions, IncrementalSaverOptions } from './types.js';
+import type { IncrementalSaverOptions, OutputOptions } from './types.js';
 
 // --- Zero-padding helper (matching scraper.js:45-47) ---
 
@@ -34,7 +34,9 @@ export function saveUrlsToFile(filePath: string, urls: Set<string>): void {
 
 // --- Create incremental saver that triggers at threshold (D-05, D-06, D-08) ---
 
-export function createIncrementalSaver(options: IncrementalSaverOptions): (urls: Set<string>) => void {
+export function createIncrementalSaver(
+    options: IncrementalSaverOptions,
+): (urls: Set<string>) => void {
     const saveInterval = options.saveInterval ?? 100;
     let lastSaveCount = 0;
 
