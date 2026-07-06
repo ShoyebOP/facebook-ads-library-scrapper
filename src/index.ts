@@ -57,6 +57,12 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
         logger.info(`Using preset: ${argv.preset} (${webhookUrl})`);
     }
 
+    // CLI --callback flag overrides preset callback URL
+    if (argv.callback) {
+        webhookUrl = argv.callback;
+        logger.info(`Using --callback flag override: ${argv.callback}`);
+    }
+
     // Determine ad library URL with precedence: CLI flag > config preset > default
     let resolvedUrl: string | undefined;
     if (argv.url) {
