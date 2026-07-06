@@ -135,7 +135,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4 → 5
 | 2. Core Scraper Engine | 4/4 | Complete   | 2026-07-05 |
 | 3. Output & Delivery | 2/2 | Complete   | 2026-07-05 |
 | 4. Daemon & Validation | 3/3 | Complete    | 2026-07-05 |
-| 5. Fix milestone gaps | 2/2 | Complete   | 2026-07-05 |
+| 5. Fix milestone gaps | 2/2 | Complete    | 2026-07-05 |
 
 ### Phase 5: Fix milestone gaps: daemon infinite fork, shutdown handlers, incremental saver
 
@@ -148,3 +148,15 @@ Plans:
 
 - [x] 05-01-PLAN.md — Daemon fork prevention (env var), CLI proxy validation, type prep
 - [x] 05-02-PLAN.md — Shutdown handler wiring, incremental saver integration
+
+### Phase 6: Milestone v1.0 — Gaps Found. Score: 32/42 requirements satisfied. Unsatisfied: SETUP-05, SETUP-06, CONFIG-05, SCRAPE-01, SCRAPE-02, OUTPUT-01, OUTPUT-03, WEBHOOK-01, WEBHOOK-02, WEBHOOK-03. Cross-Phase Issues: setupShutdownHandler-orphaned, dependency-placement, module-resolution-mismatch, test-duplication. Broken Flows: non-daemon-shutdown.
+
+**Goal:** Fix all v1.0 milestone gaps — resolve 4 integration warnings, wire non-daemon shutdown, consolidate tests, clean dead code, implement --env-file, and create retroactive verification for 10 orphaned requirements
+**Requirements**: SETUP-02, SETUP-05, SETUP-06, CONFIG-05, SCRAPE-01, SCRAPE-02, OUTPUT-01, OUTPUT-03, WEBHOOK-01, WEBHOOK-02, WEBHOOK-03, DAEMON-04, SCRAPE-10
+**Depends on:** Phase 5
+**Plans:** 2 plans
+
+Plans:
+
+- [ ] 06-01-PLAN.md — Fix integration warnings (dependency placement, module resolution, shutdown wiring, dead code, --callback override)
+- [ ] 06-02-PLAN.md — Test consolidation, dead types cleanup, --env-file implementation, retroactive verification documentation
