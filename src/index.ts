@@ -34,6 +34,31 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     // D-20: create structured logger
     const logger = createLogger();
 
+    // Load env file if specified (safety net for when CLI entry point is bypassed)
+    if (argv.envFile) {
+        const fs = await import('node:fs');
+        try {
+            const content = fs.readFileSync(argv.envFile, 'utf-8');
+            const lines = content.split('\n');
+            for (const line of lines) {
+                const trimmed = line.trim();
+                if (!trimmed || trimmed.startsWith('#')) continue;
+                const eqIndex = trimmed.indexOf('=');
+                if (eqIndex === -1) continue;
+                const key = trimmed.substring(0, eqIndex).trim();
+                let value = trimmed.substring(eqIndex + 1).trim();
+                // Strip surrounding quotes
+                if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                    value = value.slice(1, -1);
+                }
+                process.env[key] = value;
+            }
+            logger.info(`Loaded env file: ${argv.envFile}`);
+        } catch (err) {
+            logger.error({ err }, 'Failed to load env file');
+        }
+    }
+
     // D-04: If --daemon flag (and not already child), fork child process and exit parent
     if (argv.daemon && process.env.SCRAPER_DAEMON_CHILD !== '1') {
         const { startDaemon } = await import('./daemon.js');

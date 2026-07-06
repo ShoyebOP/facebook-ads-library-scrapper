@@ -94,6 +94,33 @@ if (argv.proxy !== undefined && argv.proxy === '') {
     process.exit(1);
 }
 
+// --- Load env file if specified ---
+
+if (argv.envFile) {
+    const fs = await import('node:fs');
+    try {
+        const content = fs.readFileSync(argv.envFile, 'utf-8');
+        const lines = content.split('\n');
+        for (const line of lines) {
+            const trimmed = line.trim();
+            if (!trimmed || trimmed.startsWith('#')) continue;
+            const eqIndex = trimmed.indexOf('=');
+            if (eqIndex === -1) continue;
+            const key = trimmed.substring(0, eqIndex).trim();
+            let value = trimmed.substring(eqIndex + 1).trim();
+            // Strip surrounding quotes
+            if ((value.startsWith('"') && value.endsWith('"')) || (value.startsWith("'") && value.endsWith("'"))) {
+                value = value.slice(1, -1);
+            }
+            process.env[key] = value;
+        }
+        console.log(`Loaded env file: ${argv.envFile}`);
+    } catch (err) {
+        console.error(`Error loading env file: ${(err as Error).message}`);
+        process.exit(1);
+    }
+}
+
 // --- Handle daemon actions ---
 
 if (argv.daemonAction) {

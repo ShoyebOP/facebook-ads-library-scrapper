@@ -44,14 +44,6 @@ export interface IncrementalSaverOptions {
     saveInterval?: number;
 }
 
-// --- Error category (D-19) ---
-
-export type ErrorCategory =
-    | 'transient'
-    | 'permanent'
-    | 'browser'
-    | 'extraction';
-
 // --- Webhook payload (D-09, D-10) ---
 
 export interface WebhookPayload {
@@ -70,10 +62,4 @@ export interface WebhookOptions {
     logger: Logger;
 }
 
-// --- Daemon options (D-01 to D-12) ---
 
-export interface DaemonOptions {
-    query: string;
-    argv: string[];
-    logger: Logger;
-}
