@@ -123,6 +123,30 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
             },
             logger,
         });
+    } else {
+        // Non-daemon: wire shutdown handlers directly
+        let shuttingDown = false;
+        const shutdown = async (signal: string) => {
+            if (shuttingDown) return;
+            shuttingDown = true;
+            logger.info(`Received ${signal}, shutting down...`);
+            try {
+                saveUrlsToFile(outputFile, urls);
+                logger.info(`Saved ${urls.size} URLs during shutdown`);
+            } catch (err) {
+                logger.error({ err }, 'Failed to save URLs during shutdown');
+            }
+            try {
+                if (browserRef) {
+                    await browserRef.close();
+                }
+            } catch (err) {
+                logger.error({ err }, 'Failed to close browser during shutdown');
+            }
+            process.exit(0);
+        };
+        process.on('SIGINT', () => shutdown('SIGINT'));
+        process.on('SIGTERM', () => shutdown('SIGTERM'));
     }
 
     // Log completion with URL count

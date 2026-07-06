@@ -107,44 +107,4 @@ export async function withRetry<T>(
     );
 }
 
-// --- Graceful shutdown handler (SCRAPE-10) ---
 
-interface ShutdownDeps {
-    saveUrls: (urls: Set<string>) => void;
-    browser: { close: () => Promise<void> };
-    logger: Logger;
-}
-
-export function setupShutdownHandler(deps: ShutdownDeps): void {
-    let shuttingDown = false;
-
-    const shutdown = async () => {
-        if (shuttingDown) return;
-        shuttingDown = true;
-
-        deps.logger.info('Shutting down gracefully...');
-
-        try {
-            deps.saveUrls(new Set());
-        } catch (error) {
-            deps.logger.error(
-                { err: error },
-                'Failed to save URLs during shutdown',
-            );
-        }
-
-        try {
-            await deps.browser.close();
-        } catch (error) {
-            deps.logger.error(
-                { err: error },
-                'Failed to close browser during shutdown',
-            );
-        }
-
-        process.exit(0);
-    };
-
-    process.on('SIGINT', shutdown);
-    process.on('SIGTERM', shutdown);
-}
