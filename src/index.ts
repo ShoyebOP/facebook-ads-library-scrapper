@@ -116,24 +116,7 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     // Capture browser reference for shutdown handler cleanup
     let browserRef: import('playwright-core').Browser | null = null;
 
-    // Construct ScraperOptions from CliArgs
-    const options: ScraperOptions = {
-        query: argv.query,
-        maxUrls: argv.maxUrls,
-        maxNoNewScrolls: argv.maxNoNewScrolls,
-        headless: argv.headless,
-        proxy: argv.proxy,
-        url: resolvedUrl,
-        logger,
-        incrementalSaver,
-        onBrowserReady: (b) => { browserRef = b; },
-    };
-
-    // Run scraper pipeline
-    const urls = await runScraper(options);
-    state.urls = urls;
-
-    // Mutable container for shutdown handler closure (urls available after runScraper)
+    // Mutable container for shutdown handler closure (urls populated after runScraper)
     const state = { urls: new Set<string>() };
 
     // D-08: Wire shutdown handlers when running as daemon — registered BEFORE runScraper
@@ -152,7 +135,27 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
             },
             logger,
         });
-    } else {
+    }
+
+    // Construct ScraperOptions from CliArgs
+    const options: ScraperOptions = {
+        query: argv.query,
+        maxUrls: argv.maxUrls,
+        maxNoNewScrolls: argv.maxNoNewScrolls,
+        headless: argv.headless,
+        proxy: argv.proxy,
+        url: resolvedUrl,
+        logger,
+        incrementalSaver,
+        onBrowserReady: (b) => { browserRef = b; },
+    };
+
+    // Run scraper pipeline
+    const urls = await runScraper(options);
+    state.urls = urls;
+
+    // Non-daemon: wire shutdown handlers directly (after runScraper since it's not daemon mode)
+    if (process.env.SCRAPER_DAEMON_CHILD !== '1') {
         // Non-daemon: wire shutdown handlers directly
         let shuttingDown = false;
         const shutdown = async (signal: string) => {
