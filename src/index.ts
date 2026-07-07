@@ -9,7 +9,7 @@ import {
     saveUrlsToFile,
 } from './output.js';
 import { runScraper } from './scraper.js';
-import type { ScraperOptions } from './types.js';
+import type { ScraperOptions, ScraperResult } from './types.js';
 import { notifyWebhook, resolveEndpoint } from './webhook.js';
 
 // --- CLI argument types ---
@@ -160,28 +160,35 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
 
     // Run scraper pipeline
     const startTime = Date.now();
-    const urls = await runScraper(options);
+    const result = await runScraper(options);
     const elapsedMs = Date.now() - startTime;
     const elapsedMin = Math.floor(elapsedMs / 60000);
     const elapsedSec = Math.floor((elapsedMs % 60000) / 1000);
 
-    // Log completion with URL count and elapsed time
+    // Stopping reason diagnostic snapshot (D-10, D-11)
     logger.info(
-        `Scrape complete: ${urls.size} URLs in ${elapsedMin}m ${elapsedSec}s`,
+        {
+            reason: result.reason,
+            totalTime: `${elapsedMin}m ${elapsedSec}s`,
+            scrolls: result.scrollCount,
+            uniqueUrls: result.urls.size,
+            maxUrls: result.maxUrls,
+        },
+        `Stopped: ${result.reason} (${result.urls.size}/${result.maxUrls}). Total time: ${elapsedMin}m ${elapsedSec}s. Scrolls: ${result.scrollCount}. Unique URLs: ${result.urls.size}.`,
     );
 
     // D-07: save file BEFORE webhook notification (data safety)
-    saveUrlsToFile(outputFile, urls);
-    logger.info(`Saved ${urls.size} unique profile URLs to ${outputFile}`);
+    saveUrlsToFile(outputFile, result.urls);
+    logger.info(`Saved ${result.urls.size} unique profile URLs to ${outputFile}`);
 
-    // D-09: send webhook notification if preset has callback URL
-    if (webhookUrl) {
+    // D-09: send webhook notification only in daemon mode with preset callback URL
+    if (webhookUrl && argv.daemon) {
         await notifyWebhook({
             url: webhookUrl,
-            payload: { query: argv.query, outputFile, count: urls.size },
+            payload: { query: argv.query, outputFile, count: result.urls.size },
             logger,
         });
     }
 
-    return urls;
+    return result.urls;
 }
