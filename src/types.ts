@@ -27,6 +27,7 @@ export interface ScraperOptions {
     logger: Logger;
     incrementalSaver?: (urls: Set<string>) => void;
     onBrowserReady?: (browser: Browser) => void;
+    targetUrls?: Set<string>;
 }
 
 // --- Output options (D-01 to D-04) ---

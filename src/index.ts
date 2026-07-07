@@ -119,23 +119,30 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     // Mutable container for shutdown handler closure (urls populated after runScraper)
     const state = { urls: new Set<string>() };
 
-    // D-08: Wire shutdown handlers when running as daemon — registered BEFORE runScraper
-    // so SIGTERM is handled even if scraper hasn't finished yet
-    if (process.env.SCRAPER_DAEMON_CHILD === '1') {
-        const { setupDaemonShutdown } = await import('./daemon.js');
-        setupDaemonShutdown({
-            saveState: () => {
-                saveUrlsToFile(outputFile, state.urls);
-                logger.info(`Saved ${state.urls.size} URLs during shutdown`);
-            },
-            cleanup: async () => {
-                if (browserRef) {
-                    try { await browserRef.close(); } catch (err) { logger.error({ err }, 'Failed to close browser during shutdown'); }
-                }
-            },
-            logger,
-        });
-    }
+    // D-08: Wire shutdown handlers — registered BEFORE runScraper
+    // so SIGTERM/SIGINT is handled even if scraper hasn't finished yet
+    let shuttingDown = false;
+    const shutdown = async (signal: string) => {
+        if (shuttingDown) return;
+        shuttingDown = true;
+        logger.info(`Received ${signal}, shutting down...`);
+        try {
+            saveUrlsToFile(outputFile, state.urls);
+            logger.info(`Saved ${state.urls.size} URLs during shutdown`);
+        } catch (err) {
+            logger.error({ err }, 'Failed to save URLs during shutdown');
+        }
+        try {
+            if (browserRef) {
+                await browserRef.close();
+            }
+        } catch (err) {
+            logger.error({ err }, 'Failed to close browser during shutdown');
+        }
+        process.exit(0);
+    };
+    process.on('SIGINT', () => shutdown('SIGINT'));
+    process.on('SIGTERM', () => shutdown('SIGTERM'));
 
     // Construct ScraperOptions from CliArgs
     const options: ScraperOptions = {
@@ -148,38 +155,11 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
         logger,
         incrementalSaver,
         onBrowserReady: (b) => { browserRef = b; },
+        targetUrls: state.urls,
     };
 
     // Run scraper pipeline
     const urls = await runScraper(options);
-    state.urls = urls;
-
-    // Non-daemon: wire shutdown handlers directly (after runScraper since it's not daemon mode)
-    if (process.env.SCRAPER_DAEMON_CHILD !== '1') {
-        // Non-daemon: wire shutdown handlers directly
-        let shuttingDown = false;
-        const shutdown = async (signal: string) => {
-            if (shuttingDown) return;
-            shuttingDown = true;
-            logger.info(`Received ${signal}, shutting down...`);
-            try {
-                saveUrlsToFile(outputFile, urls);
-                logger.info(`Saved ${urls.size} URLs during shutdown`);
-            } catch (err) {
-                logger.error({ err }, 'Failed to save URLs during shutdown');
-            }
-            try {
-                if (browserRef) {
-                    await browserRef.close();
-                }
-            } catch (err) {
-                logger.error({ err }, 'Failed to close browser during shutdown');
-            }
-            process.exit(0);
-        };
-        process.on('SIGINT', () => shutdown('SIGINT'));
-        process.on('SIGTERM', () => shutdown('SIGTERM'));
-    }
 
     // Log completion with URL count
     logger.info(

@@ -47,6 +47,7 @@ export async function runScraper(
 
     const scrollLogger = createChildLogger(logger, 'scroll');
     const profileUrls = new Set<string>();
+    const targetSet = options.targetUrls ?? profileUrls;
 
     // Build search URL: use provided URL or fall back to default
     const searchUrl =
@@ -70,7 +71,7 @@ export async function runScraper(
         const page = await browser.newPage();
 
         // Setup GraphQL interceptor for URL extraction
-        setupGraphQLInterceptor(page, profileUrls, logger);
+        setupGraphQLInterceptor(page, targetSet, logger);
 
         // Navigate to Facebook Ads Library
         scrollLogger.info(`Navigating to Ads Library...`);
@@ -85,8 +86,8 @@ export async function runScraper(
         let scrollCount = 0;
         let lastLogTime = Date.now();
 
-        while (noNewUrlsCount < maxNoNewScrolls && profileUrls.size < maxUrls) {
-            const before = profileUrls.size;
+        while (noNewUrlsCount < maxNoNewScrolls && targetSet.size < maxUrls) {
+            const before = targetSet.size;
 
             // Scroll to bottom
             try {
@@ -130,13 +131,13 @@ export async function runScraper(
 
             scrollCount++;
 
-            if (profileUrls.size === before) {
+            if (targetSet.size === before) {
                 noNewUrlsCount++;
                 // Heartbeat: log periodically even when no new URLs found
                 const elapsed = Date.now() - lastLogTime;
                 if (elapsed >= 30000) {
                     scrollLogger.info(
-                        `[heartbeat] Scroll #${scrollCount}: ${profileUrls.size} URLs, no new leads in ${Math.round(elapsed / 1000)}s (${noNewUrlsCount}/${maxNoNewScrolls} dead scrolls)`,
+                        `[heartbeat] Scroll #${scrollCount}: ${targetSet.size} URLs, no new leads in ${Math.round(elapsed / 1000)}s (${noNewUrlsCount}/${maxNoNewScrolls} dead scrolls)`,
                     );
                     lastLogTime = Date.now();
                 }
@@ -144,21 +145,21 @@ export async function runScraper(
                 noNewUrlsCount = 0;
                 lastLogTime = Date.now();
                 scrollLogger.info(
-                    `${profileUrls.size} unique profile URLs found...`,
+                    `${targetSet.size} unique profile URLs found...`,
                 );
             }
 
             // Incremental save — persist URLs periodically
-            incrementalSaver?.(profileUrls);
+            incrementalSaver?.(targetSet);
         }
 
-        if (profileUrls.size >= maxUrls) {
+        if (targetSet.size >= maxUrls) {
             scrollLogger.info(`Reached max URLs limit (${maxUrls}).`);
         } else {
             scrollLogger.info('No more new ads loading.');
         }
 
-        return profileUrls;
+        return targetSet;
     } finally {
         // D-04: always close browser
         if (browser) {
