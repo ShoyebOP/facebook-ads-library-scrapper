@@ -131,14 +131,19 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
 
     // Run scraper pipeline
     const urls = await runScraper(options);
+    state.urls = urls;
 
-    // D-08: Wire shutdown handlers when running as daemon
+    // Mutable container for shutdown handler closure (urls available after runScraper)
+    const state = { urls: new Set<string>() };
+
+    // D-08: Wire shutdown handlers when running as daemon — registered BEFORE runScraper
+    // so SIGTERM is handled even if scraper hasn't finished yet
     if (process.env.SCRAPER_DAEMON_CHILD === '1') {
         const { setupDaemonShutdown } = await import('./daemon.js');
         setupDaemonShutdown({
             saveState: () => {
-                saveUrlsToFile(outputFile, urls);
-                logger.info(`Saved ${urls.size} URLs during shutdown`);
+                saveUrlsToFile(outputFile, state.urls);
+                logger.info(`Saved ${state.urls.size} URLs during shutdown`);
             },
             cleanup: async () => {
                 if (browserRef) {
