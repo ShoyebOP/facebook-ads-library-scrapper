@@ -8,7 +8,7 @@ import type { Logger } from 'pino';
 // --- Constants (D-07, D-08, D-11) ---
 
 export const PID_FILE = '.daemon.pid';
-export const LOG_FILE = 'daemon.log';
+export const LOG_FILE = '.daemon.log';
 
 // --- PID file operations (D-07, D-08) ---
 
@@ -80,6 +80,11 @@ export async function startDaemon(
             stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
             env: { ...process.env, SCRAPER_DAEMON_CHILD: '1' },
         });
+
+        // D-12: Pipe child stdout/stderr to log file
+        const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
+        child.stdout?.pipe(logStream);
+        child.stderr?.pipe(logStream);
 
         // D-04: Write PID and release lock
         writePid(child.pid!);

@@ -22,7 +22,6 @@ export type CliArgs = {
     maxUrls?: number;
     maxNoNewScrolls: number;
     daemon: boolean;
-    daemonAction?: string;
     callback?: string;
     envFile?: string;
     url?: string;

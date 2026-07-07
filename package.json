@@ -13,7 +13,8 @@
     "test": "bun test",
     "lint": "bunx biome check ./src",
     "format": "bunx biome format --write ./src",
-    "typecheck": "bun run tsc --noEmit"
+    "typecheck": "bun run tsc --noEmit",
+    "daemon-actions": "bun run src/daemon-actions.ts"
   },
   "dependencies": {
     "cloakbrowser": "^0.3.28",

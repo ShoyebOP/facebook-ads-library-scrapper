@@ -90,8 +90,8 @@ describe('daemon.ts', () => {
             expect(PID_FILE).toBe('.daemon.pid');
         });
 
-        it('LOG_FILE is daemon.log', () => {
-            expect(LOG_FILE).toBe('daemon.log');
+        it('LOG_FILE is .daemon.log', () => {
+            expect(LOG_FILE).toBe('.daemon.log');
         });
     });
 
