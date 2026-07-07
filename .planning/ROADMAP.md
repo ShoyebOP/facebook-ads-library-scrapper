@@ -160,3 +160,25 @@ Plans:
 
 - [x] 06-01-PLAN.md — Fix integration warnings (dependency placement, module resolution, shutdown wiring, dead code, --callback override)
 - [x] 06-02-PLAN.md — Test consolidation, dead types cleanup, --env-file implementation, retroactive verification documentation
+
+### Phase 7: Daemon actions not working and daemon logs not being saved and tests still saving files in output folder and not cleaned
+
+**Goal:** Fix three daemon-mode bugs: daemon management commands (stop/status/logs) fail because yargs requires --query, daemon logs are not written to a file, and tests leave artifacts in project root
+**Requirements**: DAEMON-01, DAEMON-02, DAEMON-03, DAEMON-04, DAEMON-05, TEST-01, TEST-02
+**Depends on:** Phase 6
+**Plans:** 1 plan
+
+Plans:
+
+- [ ] 07-01-PLAN.md — Standalone daemon-actions script, log file piping, test isolation fix
+
+### Phase 8: Logs are not terminal friendly and ugly raw logs everywhere make it cleaned and more readable in both cli and daemon mode
+
+**Goal:** [To be planned]
+**Requirements**: TBD
+**Depends on:** Phase 7
+**Plans:** 0 plans
+
+Plans:
+
+- [ ] TBD (run /gsd-plan-phase 8 to break down)
