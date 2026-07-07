@@ -174,13 +174,13 @@ Plans:
 - [x] 07-02-PLAN.md — Gap closure: polling stop loop, child-process log writing, file path threading, test isolation
 - [x] 07-03-PLAN.md — Gap closure: fix shutdown URL saving (non-daemon handler registration, shared URL container wiring)
 
-### Phase 8: Logs are not terminal friendly and ugly raw logs everywhere make it cleaned and more readable in both cli and daemon mode
+### Phase 8: Logs are not terminal friendly and ugly raw logs everywhere
 
-**Goal:** [To be planned]
-**Requirements**: TBD
+**Goal:** Transform raw pino JSON log output into polished, human-readable formatted text using pino-pretty stream API for both CLI and daemon mode
+**Requirements**: ERROR-01, ERROR-05
 **Depends on:** Phase 7
-**Plans:** 0 plans
+**Plans:** 1 plan
 
 Plans:
 
-- [ ] TBD (run /gsd-plan-phase 8 to break down)
+- [ ] 08-01-PLAN.md — Install pino-pretty, rewrite logger.ts with stream API, update completion message format
