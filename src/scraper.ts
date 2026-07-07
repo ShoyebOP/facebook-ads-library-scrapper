@@ -3,9 +3,9 @@
 import type { Browser } from 'playwright-core';
 import { launchBrowser } from './browser.js';
 import { withTimeout } from './errors.js';
-import { setupGraphQLInterceptor } from './extractor.js';
+import { setupGraphQLInterceptor, getFilteredCount, resetFilteredCount } from './extractor.js';
 import { createChildLogger } from './logger.js';
-import type { ScraperOptions } from './types.js';
+import type { ScraperOptions, ScraperResult } from './types.js';
 
 // --- Default base URL for Facebook Ads Library search ---
 
@@ -32,7 +32,7 @@ const SCROLL_RETRY_DELAY_MS = 1000;
 
 export async function runScraper(
     options: ScraperOptions,
-): Promise<Set<string>> {
+): Promise<ScraperResult> {
     const {
         query,
         maxUrls = Infinity,
@@ -81,10 +81,14 @@ export async function runScraper(
         });
         scrollLogger.info('Page loaded. Scrolling to load more ads...');
 
+        // Reset filtered count before scroll loop
+        resetFilteredCount();
+
         // Auto-scroll loop
         let noNewUrlsCount = 0;
         let scrollCount = 0;
         let lastLogTime = Date.now();
+        let previousFiltered = 0;
 
         while (noNewUrlsCount < maxNoNewScrolls && targetSet.size < maxUrls) {
             const before = targetSet.size;
@@ -131,6 +135,29 @@ export async function runScraper(
 
             scrollCount++;
 
+            // Per-scroll metrics
+            let scrollHeight = 0;
+            try {
+                scrollHeight = await page.evaluate(() => window.scrollY);
+            } catch {
+                scrollHeight = 0;
+            }
+            const urlsFound = targetSet.size - before;
+            const currentFiltered = getFilteredCount();
+            const filteredThisScroll = currentFiltered - previousFiltered;
+            const runningTotal = targetSet.size;
+            previousFiltered = currentFiltered;
+
+            scrollLogger.info(
+                {
+                    scrollHeight,
+                    urlsFound,
+                    filteredCount: filteredThisScroll,
+                    runningTotal,
+                },
+                `Found: ${urlsFound}, Filtered: ${filteredThisScroll} (dups), Unique: ${runningTotal}, Total: ${runningTotal}`,
+            );
+
             if (targetSet.size === before) {
                 noNewUrlsCount++;
                 // Heartbeat: log periodically even when no new URLs found
@@ -144,22 +171,14 @@ export async function runScraper(
             } else {
                 noNewUrlsCount = 0;
                 lastLogTime = Date.now();
-                scrollLogger.info(
-                    `${targetSet.size} unique profile URLs found...`,
-                );
             }
 
             // Incremental save — persist URLs periodically
             incrementalSaver?.(targetSet);
         }
 
-        if (targetSet.size >= maxUrls) {
-            scrollLogger.info(`Reached max URLs limit (${maxUrls}).`);
-        } else {
-            scrollLogger.info('No more new ads loading.');
-        }
-
-        return targetSet;
+        const reason = targetSet.size >= maxUrls ? 'max-urls reached' : 'no-new-ads';
+        return { urls: targetSet, reason, scrollCount, maxUrls: maxUrls ?? Infinity };
     } finally {
         // D-04: always close browser
         if (browser) {
