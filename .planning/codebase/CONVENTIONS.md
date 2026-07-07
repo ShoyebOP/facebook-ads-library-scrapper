@@ -1,202 +1,243 @@
 # Coding Conventions
 
-**Analysis Date:** 2026-06-29
-
-## Project Context
-
-This is a **single-file JavaScript project** (`scraper.js`, 260 lines) using ES modules, run via Bun. There are no linting tools, no formatter configs, and no TypeScript. All conventions below are inferred from the existing code.
+**Analysis Date:** 2026-07-07
 
 ## Naming Patterns
 
 **Files:**
-- Lowercase with hyphens for non-code files: `example_page_code.html`
-- Lowercase with no separators for code: `scraper.js`
-- Follow the pattern: `scraper.js` (not `Scraper.js`, not `scraper-service.js`)
+- Source files: `camelCase.ts` (e.g., `scraper.ts`, `extractor.ts`, `browser.ts`)
+- Test files: `camelCase.test.ts` (e.g., `errors.test.ts`, `config.test.ts`)
+- Config files: `camelCase.json` (e.g., `config.json`, `config.example.json`)
+- Type declarations: `camelCase.d.ts` (e.g., `proper-lockfile.d.ts`)
 
 **Functions:**
-- camelCase: `extractProfileUrls`, `withTimeout`, `notifyWebhook`, `saveUrls`
-- Short utility helpers use terse names: `pad` (`scraper.js:45`)
-- Prefixed with action verb when producing side effects: `notifyWebhook` (`scraper.js:97`), `saveUrls` (`scraper.js:87`)
-- Boolean-result functions use no prefix: check `extractProfileUrls` name does not imply boolean
+- camelCase: `extractProfileUrls`, `withTimeout`, `withRetry`, `createLogger`, `launchBrowser`
+- Action verbs for side-effect functions: `saveUrlsToFile`, `notifyWebhook`, `ensureOutputDir`
+- Boolean-result functions: use descriptive names without `is` prefix (e.g., `isProcessRunning`)
+- Factory functions: `create` prefix (e.g., `createLogger`, `createChildLogger`, `createIncrementalSaver`)
 
 **Variables:**
-- camelCase for local variables: `profileUrls`, `noNewUrlsCount`, `scrollCount`, `lastLogTime`
-- UPPER_SNAKE_CASE for constants that are module-level config: `CALLBACKS`, `DEFAULT_CALLBACK`, `BASE_URL`
-- Module-level `const` for anything set once at the top (`scraper.js:8-30`)
+- camelCase: `profileUrls`, `noNewUrlsCount`, `scrollCount`, `lastLogTime`
+- UPPER_SNAKE_CASE for module-level constants: `DEFAULT_BASE_URL`, `SCROLL_INTERVAL_MS`, `PID_FILE`
+- Private implementation details: no `_` prefix convention (just use `const`)
 
-**CLI Argument Variables:**
-- Pattern: `<name>Idx` for the index, `<name>` for the parsed value
-- Examples: `proxyIdx` / `proxy`, `maxUrlsIdx` / `maxUrls`, `maxNoNewScrollsIdx` / `maxNoNewScrolls`, `callbackIdx` / `callbackName`
-- Defined at module scope in sequential order (`scraper.js:19-30`)
+**Types:**
+- PascalCase interfaces: `BrowserOptions`, `ScraperOptions`, `OutputOptions`, `WebhookPayload`
+- PascalCase type aliases: `ErrorType`, `CliArgs`
+- Type imports: `import type { Browser } from 'playwright-core'`
 
 ## Code Style
 
 **Formatting:**
-- No formatter configured. Observed style uses **4-space indentation** throughout `scraper.js`
-- Opening braces on same line as statement
-- Trailing semicolons used consistently
-- Single quotes for string literals: `'use strict'`-style not used (ESM)
-- Template literals for string interpolation: `` `${outputFile}` `` (`scraper.js:90`)
-
-**Line Length:**
-- No enforced limit. Long lines exist, e.g., `BASE_URL` (`scraper.js:16`) and output path construction (`scraper.js:52`)
+- Tool: Biome (`biome.json`)
+- Indentation: 4 spaces (configured in `biome.json`)
+- Quote style: single quotes (configured in `biome.json`)
+- Semicolons: always (configured in `biome.json`)
 
 **Linting:**
-- No ESLint, Biome, or any linter configured
-- No `.eslintrc`, `eslint.config.js`, `biome.json`, or equivalent
+- Tool: Biome (`biome.json`)
+- Rules: recommended preset
+- No ESLint or Prettier configured
+
+**TypeScript:**
+- Strict mode: enabled (`tsconfig.json`)
+- Target: ESNext
+- Module: Preserve
+- Module resolution: bundler
+- `verbatimModuleSyntax: true` (enforces type-only imports)
+- `noEmit: true` (type-checking only, no compilation)
 
 ## Import Organization
 
-**Order (observed in `scraper.js:1-5`):**
-1. Third-party packages: `cloakbrowser` (`scraper.js:1`)
-2. Node.js built-in modules: `fs`, `child_process`, `http`, `https` (`scraper.js:2-5`)
-
-**Style:**
-- Named imports for functions: `import { launch } from 'cloakbrowser'`
-- Default imports for full modules: `import fs from 'fs'`
-- Named imports for Node built-ins: `import { fork } from 'child_process'`
+**Order:**
+1. External packages (e.g., `cloakbrowser`, `pino`, `p-retry`)
+2. Node.js built-ins (e.g., `fs`, `http`, `child_process`)
+3. Local modules with `.js` extension (e.g., `./errors.js`, `./logger.js`)
 
 **Path Aliases:**
-- None. No `tsconfig.json` or bundler config. All imports use bare specifiers.
+- None configured. All imports use relative paths with `.js` extension.
 
-## Module Design
-
-**Module System:** ESM (`"type": "module"` in `package.json:4`)
-
-**Structure:**
-- Single file, all logic in one module
-- Constants at top (`scraper.js:8-16`)
-- CLI argument parsing at top (`scraper.js:19-30`)
-- Helper functions in middle (`scraper.js:45-115`)
-- Main async function at bottom (`scraper.js:118-239`)
-- Entry point invocation last: `main().catch(...)` (`scraper.js:257-260`)
-
-**Exports:**
-- No exports. This is a CLI script, not a library.
+**Import Style:**
+- Named imports for functions: `import { launch } from 'cloakbrowser'`
+- Default imports for full modules: `import fs from 'fs'`
+- Type-only imports: `import type { Browser } from 'playwright-core'`
+- Dynamic imports for conditional loading: `await import('./daemon.js')`
 
 ## Error Handling
 
-**Patterns:**
+**Classification Pattern:**
+```typescript
+// src/errors.ts
+export type ErrorType = 'transient' | 'permanent' | 'browser' | 'extraction';
 
-1. **try/catch with `console.error` and continue:**
-   ```javascript
-   // scraper.js:154-159
-   try {
-       const json = await withTimeout(response.json(), 5000);
-       extractProfileUrls(json, profileUrls);
-   } catch (e) {
-       if (e.message.includes('Timed out')) {
-           console.error(`Skipped slow GraphQL response (${e.message})`);
-       }
-       // Non-JSON or failed responses, skip
-   }
-   ```
-   - Pattern: catch, log specific error, silently skip non-critical failures
+export function classifyError(error: Error): ErrorType {
+    const msg = error.message.toLowerCase();
+    if (TRANSIENT_KEYWORDS.some((kw) => msg.includes(kw))) return 'transient';
+    // ...
+}
+```
 
-2. **try/catch with retry:**
-   ```javascript
-   // scraper.js:188-194
-   try {
-       await withTimeout(page.evaluate(...), 10000);
-   } catch (e) {
-       console.error(`Scroll failed: ${e.message}. Retrying...`);
-       await page.waitForTimeout(1000);
-       continue;
-   }
-   ```
-   - Pattern: catch, log, brief delay, continue loop
-
-3. **Empty catch for cleanup operations:**
-   ```javascript
-   // scraper.js:169-170
-   try { await browser.close(); } catch { }
-   try { if (logFile) fs.unlinkSync(logFile); } catch { }
-   ```
-   - Pattern: swallow errors for non-essential cleanup
-
-4. **Top-level catch with `process.exit(1)`:**
-   ```javascript
-   // scraper.js:257-260
-   main().catch((err) => {
-       console.error('Error:', err.message);
-       process.exit(1);
-   });
-   ```
-
-**CLI Argument Validation:**
-- `process.exit(1)` with `console.error` for missing required args (`scraper.js:32-35`)
-- `process.exit(1)` for invalid callback names (`scraper.js:37-40`)
+**Retry Pattern:**
+```typescript
+// src/errors.ts
+export async function withRetry<T>(
+    fn: () => Promise<T>,
+    options: { retries?: number; logger: Logger }
+): Promise<T> {
+    return pRetry(
+        async (attemptNumber) => {
+            try {
+                return await fn();
+            } catch (error) {
+                const category = classifyError(err);
+                if (category === 'permanent') throw new AbortError(err.message);
+                throw err; // transient: retry
+            }
+        },
+        { retries, onFailedAttempt: ... }
+    );
+}
+```
 
 **Timeout Pattern:**
-- Custom `withTimeout` wrapper (`scraper.js:79-84`) wrapping `Promise.race` for operations that may hang (network responses, DOM evaluations)
+```typescript
+// src/errors.ts
+export function withTimeout<T>(promise: Promise<T>, ms: number): Promise<T> {
+    return Promise.race([
+        promise,
+        new Promise<T>((_, reject) =>
+            setTimeout(() => reject(new Error(`Timed out after ${ms}ms`)), ms)
+        ),
+    ]);
+}
+```
+
+**Graceful Degradation:**
+- Webhook failures log but never crash the scraper (`src/webhook.ts:102-106`)
+- Browser close errors are silently ignored (`src/scraper.ts:166-169`)
+- Scroll failures retry with delay, then continue (`src/scraper.ts:99-105`)
+- Non-JSON responses are skipped with debug logging (`src/extractor.ts:52-63`)
 
 ## Logging
 
-**Framework:** `console.log` and `console.error` only. No structured logging library.
+**Framework:** Pino (`pino`)
 
-**Patterns:**
-- `console.log` for progress output: URL counts, status messages, file paths (`scraper.js:90,119-122,176-178`)
-- `console.error` for failures: scroll errors, webhook failures, skip messages (`scraper.js:38,112,156,191,209`)
-- Heartbeat logging: periodic status even when no new data found (`scraper.js:218-221`)
-- Daemon mode: parent prints PID via `console.log(child.pid)` and logs path via `console.error` (`scraper.js:252-253`)
+**Configuration:**
+```typescript
+// src/logger.ts
+export function createLogger(level: string = 'info'): pino.Logger {
+    return pino({
+        level: process.env.LOG_LEVEL || level,
+        redact: ['proxy', '*.proxy'], // D-21: proxy credential redaction
+    });
+}
+```
 
-**Log Message Style:**
-- Prefix-free for normal output
-- `[heartbeat]` prefix for periodic status (`scraper.js:220`)
-- Template literals for all interpolated values
+**Child Logger Pattern:**
+```typescript
+// src/browser.ts
+const browserLogger = createChildLogger(options.logger, 'browser');
+browserLogger.info('Browser launched successfully');
+```
+
+**Log Levels:**
+- `info`: Progress updates, completion status
+- `warn`: Non-fatal issues (scroll failures, webhook retries)
+- `error`: Recoverable failures (webhook failed, browser launch failed)
+- `debug`: Detailed extraction info (URL counts, response filtering)
 
 ## Comments
 
-**When to Comment:**
-- Section dividers using `// --- Section Name ---` pattern (`scraper.js:7,15,18,44,59,78,86,96,117,241`)
-- Inline explanation of non-obvious logic: resource type blocking (`scraper.js:138`), memory cleanup (`scraper.js:197`), heartbeat logging (`scraper.js:217`)
-- Commented-out code: one instance in `CALLBACKS` object (`scraper.js:12`)
+**Section Dividers:**
+```typescript
+// --- Section Name ---
+```
+- Used at the top of every file for module purpose
+- Used before each major function or section
+- Examples: `// --- Shared types and interfaces ---`, `// --- Launch stealth browser ---`
 
-**Style:**
-- `// --- Name ---` for section headers
-- `//` single-line for inline explanations
-- No JSDoc or TSDoc (no type system)
-- No file-level header comments
+**Inline Comments:**
+- Reference design decisions: `// D-03: proxy URL-embedded format passed directly to launch`
+- Explain non-obvious logic: `// DOM cleanup: remove rows above viewport (D-15)`
+- Clarify safety measures: `// D-16: webhook failure never crashes scraper — log and return`
+
+**Commented-Out Code:**
+- Minimal, only one instance observed (`src/config.ts:12` area)
+- No JSDoc or TSDoc (no type system required in JS, but TypeScript files could benefit)
 
 ## Function Design
 
 **Size:**
-- `main()` is 120 lines (`scraper.js:118-239`) — this is the largest function and handles the entire scrape lifecycle
-- Helper functions are small and focused: `extractProfileUrls` (16 lines), `withTimeout` (4 lines), `saveUrls` (7 lines), `notifyWebhook` (14 lines), `pad` (2 lines)
+- Small, focused functions: 10-30 lines typical
+- One larger orchestrator: `main()` in `src/index.ts` (196 lines)
+- Helper functions: 5-15 lines (e.g., `pad()`, `readPid()`, `removePidFile()`)
 
 **Parameters:**
-- Keep parameter count low (0-3)
-- `extractProfileUrls(obj, urls)` — object to search, Set to accumulate (`scraper.js:60`)
-- `withTimeout(promise, ms)` — generic promise wrapper (`scraper.js:79`)
-- `notifyWebhook(count)` — uses closure for `CALLBACKS`, `query`, `outputFile` (`scraper.js:97`)
+- Options objects for functions with 3+ parameters
+- Types defined in `src/types.ts`
+- Optional parameters with `?` and sensible defaults
 
 **Return Values:**
-- Mutate passed-in state (e.g., `urls.add()` in `extractProfileUrls`) rather than returning new collections
-- `withTimeout` returns the wrapped promise result
-- Helper functions return `void`; side effects are the primary pattern
+- Explicit return types on exported functions
+- `void` for side-effect functions
+- `Promise<T>` for async functions
 
-## Daemon Mode Pattern
+**Async Pattern:**
+- Always use `async/await`
+- No raw `.then()` chains
+- `try/catch` for error handling
+- `finally` for cleanup (e.g., browser close)
 
-- Use `child_process.fork` with `detached: true` to spawn background processes (`scraper.js:245-254`)
-- Parent prints PID and exits; child runs independently
-- IPC channel created but child unref'd so parent can exit
-- Environment variables passed to child for file paths (`scraper.js:248`)
-- Log stream opened, child inherits it, parent closes its handle (`scraper.js:244-251`)
+## Module Design
 
-## Webhook Pattern
+**Exports:**
+- Named exports only (no default exports)
+- Export functions, not classes
+- Export types/interfaces separately
 
-- HTTP/HTTPS determined by URL protocol at runtime (`scraper.js:100`)
-- `client.request` (not `fetch`) for Node.js native HTTP
-- JSON POST body with `Content-Type: application/json`
-- Fire-and-forget: no response body handling beyond status code logging
-- Error handler logs but does not throw (`scraper.js:110-112`)
+**Barrel Files:**
+- None. Each module exports directly.
 
-## Graceful Shutdown
+**Module Structure:**
+```typescript
+// --- Module purpose ---
 
-- `SIGINT` and `SIGTERM` handlers registered (`scraper.js:173-174`)
-- `shuttingDown` flag prevents double-execution (`scraper.js:163`)
-- Shutdown sequence: save data → close browser → cleanup log file → `process.exit(0)` (`scraper.js:164-172`)
+// 1. Imports
+import { ... } from './local.js';
+
+// 2. Constants
+const CONSTANT = value;
+
+// 3. Types (if any)
+export interface Options { ... }
+
+// 4. Functions
+export function doSomething(options: Options): Result { ... }
+```
+
+## Validation
+
+**Schema Validation:**
+- Zod for runtime validation (`src/config.ts`)
+- Type inference from schemas: `export type Config = z.infer<typeof ConfigSchema>`
+
+**CLI Validation:**
+- Yargs for argument parsing (`src/cli.ts`)
+- Manual validation for required/numeric args
+- `process.exit(1)` with `console.error` for invalid input
+
+## Configuration
+
+**Pattern:**
+- Cosmiconfig for flexible config file discovery (`src/config.ts`)
+- Preset-based system for reusable configurations
+- Environment variables for runtime overrides (`LOG_LEVEL`, `SCRAPER_DAEMON_CHILD`)
+
+**File Locations (in search order):**
+- `config.json`, `config.yaml`, `config.yml`
+- `.facebook-scraper`, `.facebook-scraper.json`
+- `package.json` (under `facebook-scraper` key)
 
 ---
 
-*Convention analysis: 2026-06-29*
+*Convention analysis: 2026-07-07*
