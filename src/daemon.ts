@@ -12,19 +12,20 @@ export const LOG_FILE = '.daemon.log';
 
 // --- PID file operations (D-07, D-08) ---
 
-export function writePid(pid: number): void {
-    fs.writeFileSync(PID_FILE, String(pid));
+export function writePid(pid: number, filePath?: string): void {
+    fs.writeFileSync(filePath ?? PID_FILE, String(pid));
 }
 
-export function readPid(): number | null {
-    if (!fs.existsSync(PID_FILE)) return null;
-    const content = fs.readFileSync(PID_FILE, 'utf-8').trim();
+export function readPid(filePath?: string): number | null {
+    const resolvedPath = filePath ?? PID_FILE;
+    if (!fs.existsSync(resolvedPath)) return null;
+    const content = fs.readFileSync(resolvedPath, 'utf-8').trim();
     return content ? parseInt(content, 10) : null;
 }
 
-export function removePidFile(): void {
+export function removePidFile(filePath?: string): void {
     try {
-        fs.unlinkSync(PID_FILE);
+        fs.unlinkSync(filePath ?? PID_FILE);
     } catch {
         // Ignore if file doesn't exist
     }
