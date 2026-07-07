@@ -159,11 +159,15 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
     };
 
     // Run scraper pipeline
+    const startTime = Date.now();
     const urls = await runScraper(options);
+    const elapsedMs = Date.now() - startTime;
+    const elapsedMin = Math.floor(elapsedMs / 60000);
+    const elapsedSec = Math.floor((elapsedMs % 60000) / 1000);
 
-    // Log completion with URL count
+    // Log completion with URL count and elapsed time
     logger.info(
-        `Scraping complete: ${urls.size} unique profile URLs collected`,
+        `Scrape complete: ${urls.size} URLs in ${elapsedMin}m ${elapsedSec}s`,
     );
 
     // D-07: save file BEFORE webhook notification (data safety)
