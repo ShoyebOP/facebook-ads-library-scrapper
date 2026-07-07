@@ -166,11 +166,13 @@ Plans:
 **Goal:** Fix three daemon-mode bugs: daemon management commands (stop/status/logs) fail because yargs requires --query, daemon logs are not written to a file, and tests leave artifacts in project root
 **Requirements**: DAEMON-01, DAEMON-02, DAEMON-03, DAEMON-04, DAEMON-05, TEST-01, TEST-02
 **Depends on:** Phase 6
-**Plans:** 1 plan
+**Plans:** 3/3 plans complete
 
 Plans:
 
-- [ ] 07-01-PLAN.md — Standalone daemon-actions script, log file piping, test isolation fix
+- [x] 07-01-PLAN.md — Standalone daemon-actions script, log file piping, test isolation fix
+- [x] 07-02-PLAN.md — Gap closure: polling stop loop, child-process log writing, file path threading, test isolation
+- [x] 07-03-PLAN.md — Gap closure: fix shutdown URL saving (non-daemon handler registration, shared URL container wiring)
 
 ### Phase 8: Logs are not terminal friendly and ugly raw logs everywhere make it cleaned and more readable in both cli and daemon mode
 
