@@ -9,20 +9,20 @@ describe('shutdown URL saving integration', () => {
             // Verify that when targetUrls is provided, runScraper returns it directly
             const source = fs.readFileSync('src/scraper.ts', 'utf-8');
             // The function uses: const targetSet = options.targetUrls ?? profileUrls;
-            // and returns: return targetSet;
+            // and returns: return { urls: targetSet, ... };
             // So when targetUrls is provided, targetSet IS targetUrls, and that's what's returned
             expect(source).toContain('const targetSet = options.targetUrls ?? profileUrls');
-            expect(source).toContain('return targetSet');
+            expect(source).toContain('urls: targetSet');
         });
 
         it('index.ts passes state.urls as targetUrls and uses return value for final save', async () => {
             const source = fs.readFileSync('src/index.ts', 'utf-8');
             // state.urls is passed as targetUrls
             expect(source).toContain('targetUrls: state.urls');
-            // The return value (urls) is used for final save and webhook
-            expect(source).toContain('const urls = await runScraper(options)');
-            expect(source).toContain('saveUrlsToFile(outputFile, urls)');
-            expect(source).toContain('urls.size');
+            // The return value (result) is used for final save and webhook
+            expect(source).toContain('const result = await runScraper(options)');
+            expect(source).toContain('saveUrlsToFile(outputFile, result.urls)');
+            expect(source).toContain('result.urls.size');
         });
     });
 

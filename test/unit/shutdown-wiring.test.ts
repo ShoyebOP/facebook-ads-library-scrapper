@@ -67,8 +67,8 @@ describe('shutdown handler wiring', () => {
 
         it('scraper returns the targetSet (which IS targetUrls when provided)', async () => {
             const source = fs.readFileSync('src/scraper.ts', 'utf-8');
-            // The function should return targetSet, not profileUrls
-            expect(source).toContain('return targetSet');
+            // The function returns ScraperResult with urls: targetSet
+            expect(source).toContain('urls: targetSet');
         });
     });
 
