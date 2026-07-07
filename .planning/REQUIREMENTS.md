@@ -59,11 +59,11 @@ Requirements for initial release. Each maps to roadmap phases.
 
 ### Error Handling
 
-- [ ] **ERROR-01**: Structured logging with pino (levels: fatal, error, warn, info, debug)
+- [x] **ERROR-01**: Structured logging with pino (levels: fatal, error, warn, info, debug)
 - [ ] **ERROR-02**: Error classification (transient, permanent, browser, extraction)
 - [ ] **ERROR-03**: Exponential backoff retry for transient errors (p-retry)
 - [ ] **ERROR-04**: No silent error swallowing (all catch blocks log)
-- [ ] **ERROR-05**: Proxy credential sanitization in logs
+- [x] **ERROR-05**: Proxy credential sanitization in logs
 
 ### Testing
 
@@ -133,11 +133,11 @@ Which phases cover which requirements. Updated during roadmap creation.
 | SCRAPE-08 | Phase 2 | Pending |
 | SCRAPE-09 | Phase 2 | Pending |
 | SCRAPE-10 | Phase 2 | Complete |
-| ERROR-01 | Phase 2 | Pending |
+| ERROR-01 | Phase 2 | Complete |
 | ERROR-02 | Phase 2 | Pending |
 | ERROR-03 | Phase 2 | Pending |
 | ERROR-04 | Phase 2 | Pending |
-| ERROR-05 | Phase 2 | Pending |
+| ERROR-05 | Phase 2 | Complete |
 | OUTPUT-01 | Phase 3 | Complete |
 | OUTPUT-02 | Phase 3 | Complete |
 | OUTPUT-03 | Phase 3 | Complete |
