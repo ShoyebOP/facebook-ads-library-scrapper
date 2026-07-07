@@ -184,3 +184,14 @@ Plans:
 Plans:
 
 - [x] 08-01-PLAN.md — Install pino-pretty, rewrite logger.ts with stream API, update completion message format
+
+### Phase 08.1: Add verbose logging for scroll metrics, URL filtering counts, and stopping reason diagnostics (INSERTED)
+
+**Goal:** Add detailed diagnostic logging to help debug scraper behavior — per-scroll metrics (scroll height, URLs found, filtered count, running total), URL filtering breakdown, and a full stopping reason diagnostic snapshot
+**Requirements**: ERROR-01
+**Depends on:** Phase 8
+**Plans:** 1 plan
+
+Plans:
+
+- [ ] 08.1-01-PLAN.md — Per-scroll metrics, filtered URL counts, stopping reason diagnostic
