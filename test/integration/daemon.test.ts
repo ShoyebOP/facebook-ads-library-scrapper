@@ -14,17 +14,11 @@ const LOG_FILE_PATH = join(testDir, LOG_FILE);
 describe('daemon.ts', () => {
     beforeEach(async () => {
         await fs.promises.mkdir(testDir, { recursive: true });
-        // Clean up any existing PID/LOG files in both CWD and testDir
-        try { fs.unlinkSync(PID_FILE); } catch {}
-        try { fs.unlinkSync(LOG_FILE); } catch {}
         try { fs.unlinkSync(PID_FILE_PATH); } catch {}
         try { fs.unlinkSync(LOG_FILE_PATH); } catch {}
     });
 
     afterEach(async () => {
-        // Clean up everything
-        try { fs.unlinkSync(PID_FILE); } catch {}
-        try { fs.unlinkSync(LOG_FILE); } catch {}
         try { fs.unlinkSync(PID_FILE_PATH); } catch {}
         try { fs.unlinkSync(LOG_FILE_PATH); } catch {}
         try { await fs.promises.rm(testDir, { recursive: true, force: true }); } catch {}
@@ -91,7 +85,6 @@ describe('daemon.ts', () => {
         });
 
         it('returns false for non-existent PID', () => {
-            // Use a very high PID that's unlikely to exist
             const result = isProcessRunning(99999999);
             expect(result).toBe(false);
         });
@@ -115,11 +108,7 @@ describe('daemon.ts', () => {
 
         it('startDaemon is async', async () => {
             const daemon = await import('../../src/daemon.js');
-            // Verify it returns a promise
-            const result = daemon.startDaemon('test', [], logger);
-            expect(result).toBeInstanceOf(Promise);
-            // We need to catch the error since we can't actually fork in test
-            try { await result; } catch {}
+            expect(daemon.startDaemon.constructor.name).toBe('AsyncFunction');
         });
     });
 

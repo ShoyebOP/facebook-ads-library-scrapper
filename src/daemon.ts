@@ -2,6 +2,7 @@
 
 import { fork } from 'child_process';
 import fs from 'fs';
+import path from 'node:path';
 import lockfile from 'proper-lockfile';
 import type { Logger } from 'pino';
 
@@ -9,6 +10,18 @@ import type { Logger } from 'pino';
 
 export const PID_FILE = '.daemon.pid';
 export const LOG_FILE = '.daemon.log';
+
+// --- Resolve daemon file paths ---
+
+export function resolveDaemonPaths(baseDir?: string): { pidFile: string, logFile: string } {
+    if (baseDir) {
+        return {
+            pidFile: path.join(baseDir, PID_FILE),
+            logFile: path.join(baseDir, LOG_FILE),
+        };
+    }
+    return { pidFile: PID_FILE, logFile: LOG_FILE };
+}
 
 // --- PID file operations (D-07, D-08) ---
 
@@ -44,12 +57,12 @@ export function isProcessRunning(pid: number): boolean {
 
 // --- Acquire PID lock (D-09) ---
 
-async function acquirePidLock(): Promise<() => Promise<void>> {
+async function acquirePidLock(pidPath: string): Promise<() => Promise<void>> {
     // Create PID file if it doesn't exist
-    if (!fs.existsSync(PID_FILE)) {
-        fs.writeFileSync(PID_FILE, '');
+    if (!fs.existsSync(pidPath)) {
+        fs.writeFileSync(pidPath, '');
     }
-    return lockfile.lock(PID_FILE, {
+    return lockfile.lock(pidPath, {
         retries: { retries: 5, minTimeout: 100, maxTimeout: 1000 },
         realpath: false,
     });
@@ -61,34 +74,36 @@ export async function startDaemon(
     query: string,
     argv: string[],
     logger: Logger,
+    baseDir?: string,
 ): Promise<number> {
+    const { pidFile, logFile } = resolveDaemonPaths(baseDir);
+
     // D-09: Acquire lock on PID file
-    const release = await acquirePidLock();
+    const release = await acquirePidLock(pidFile);
 
     try {
         // D-06: Check if daemon already running
-        const existingPid = readPid();
+        const existingPid = readPid(pidFile);
         if (existingPid && isProcessRunning(existingPid)) {
             throw new Error(`Daemon already running (PID: ${existingPid})`);
         }
 
         // D-12: Clear daemon log on start
-        fs.writeFileSync(LOG_FILE, '');
+        fs.writeFileSync(logFile, '');
 
         // D-04: Fork detached child process with env marker to prevent infinite fork
         const child = fork(process.argv[1], argv, {
             detached: true,
-            stdio: ['ignore', 'pipe', 'pipe', 'ipc'],
-            env: { ...process.env, SCRAPER_DAEMON_CHILD: '1' },
+            stdio: ['ignore', 'ignore', 'ignore', 'ipc'],
+            env: {
+                ...process.env,
+                SCRAPER_DAEMON_CHILD: '1',
+                SCRAPER_LOG_FILE: logFile,
+            },
         });
 
-        // D-12: Pipe child stdout/stderr to log file
-        const logStream = fs.createWriteStream(LOG_FILE, { flags: 'a' });
-        child.stdout?.pipe(logStream);
-        child.stderr?.pipe(logStream);
-
         // D-04: Write PID and release lock
-        writePid(child.pid!);
+        writePid(child.pid!, pidFile);
         child.unref();
 
         logger.info(`Daemon started (PID: ${child.pid})`);

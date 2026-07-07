@@ -10,14 +10,10 @@ const testDir = '/tmp/facebook-scraper-test';
 describe('daemon log piping', () => {
     beforeEach(async () => {
         await fs.promises.mkdir(testDir, { recursive: true });
-        // Clean up any existing log files
-        try { fs.unlinkSync(LOG_FILE); } catch {}
         try { fs.unlinkSync(join(testDir, LOG_FILE)); } catch {}
     });
 
     afterEach(async () => {
-        // Clean up
-        try { fs.unlinkSync(LOG_FILE); } catch {}
         try { fs.unlinkSync(join(testDir, LOG_FILE)); } catch {}
         try { await fs.promises.rm(testDir, { recursive: true, force: true }); } catch {}
     });
@@ -35,7 +31,6 @@ describe('daemon log piping', () => {
             stream.write('test log output\n');
             stream.end();
 
-            // Wait for stream to finish
             await new Promise<void>((resolve) => {
                 stream.on('finish', resolve);
             });
@@ -48,13 +43,11 @@ describe('daemon log piping', () => {
         it('log file accumulates writes with append flag', async () => {
             const logPath = join(testDir, LOG_FILE);
 
-            // First write
             const stream1 = fs.createWriteStream(logPath, { flags: 'a' });
             stream1.write('line 1\n');
             stream1.end();
             await new Promise<void>((resolve) => stream1.on('finish', resolve));
 
-            // Second write (append)
             const stream2 = fs.createWriteStream(logPath, { flags: 'a' });
             stream2.write('line 2\n');
             stream2.end();
@@ -66,8 +59,7 @@ describe('daemon log piping', () => {
         });
 
         it('daemon log file is empty by default', () => {
-            // When no daemon has run, log file should not exist
-            expect(fs.existsSync(LOG_FILE)).toBe(false);
+            expect(fs.existsSync(join(testDir, LOG_FILE))).toBe(false);
         });
     });
 });
