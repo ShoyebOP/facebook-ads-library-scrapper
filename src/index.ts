@@ -1,6 +1,7 @@
 // --- Main entry — pipeline orchestrator ---
 
 import { loadConfig, resolvePreset } from './config.js';
+import { getFilteredCount } from './extractor.js';
 import { createLogger } from './logger.js';
 import {
     createIncrementalSaver,
@@ -129,6 +130,16 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
         try {
             saveUrlsToFile(outputFile, state.urls);
             logger.info(`Saved ${state.urls.size} URLs during shutdown`);
+            // Final summary
+            const totalFound = getFilteredCount() + state.urls.size;
+            logger.info(
+                {
+                    totalFound,
+                    totalFiltered: getFilteredCount(),
+                    totalSaved: state.urls.size,
+                },
+                `Summary: ${totalFound} found, ${getFilteredCount()} filtered (dups), ${state.urls.size} saved`,
+            );
         } catch (err) {
             logger.error({ err }, 'Failed to save URLs during shutdown');
         }
@@ -175,6 +186,17 @@ export async function main(argv: CliArgs): Promise<Set<string>> {
             maxUrls: result.maxUrls,
         },
         `Stopped: ${result.reason} (${result.urls.size}/${result.maxUrls}). Total time: ${elapsedMin}m ${elapsedSec}s. Scrolls: ${result.scrollCount}. Unique URLs: ${result.urls.size}.`,
+    );
+
+    // Final summary
+    const totalFound = result.filteredCount + result.urls.size;
+    logger.info(
+        {
+            totalFound,
+            totalFiltered: result.filteredCount,
+            totalSaved: result.urls.size,
+        },
+        `Summary: ${totalFound} found, ${result.filteredCount} filtered (dups), ${result.urls.size} saved`,
     );
 
     // D-07: save file BEFORE webhook notification (data safety)

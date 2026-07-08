@@ -160,16 +160,23 @@ export async function runScraper(
 
             if (targetSet.size === before) {
                 noNewUrlsCount++;
-                // Heartbeat: log periodically even when no new URLs found
-                const elapsed = Date.now() - lastLogTime;
-                if (elapsed >= 30000) {
-                    scrollLogger.info(
-                        `[heartbeat] Scroll #${scrollCount}: ${targetSet.size} URLs, no new leads in ${Math.round(elapsed / 1000)}s (${noNewUrlsCount}/${maxNoNewScrolls} dead scrolls)`,
-                    );
-                    lastLogTime = Date.now();
-                }
             } else {
                 noNewUrlsCount = 0;
+            }
+
+            // Heartbeat: fire every 30s regardless of URL activity
+            const elapsed = Date.now() - lastLogTime;
+            if (elapsed >= 30000) {
+                scrollLogger.info(
+                    {
+                        scrollHeight,
+                        urlsFound,
+                        filteredCount: filteredThisScroll,
+                        runningTotal: targetSet.size,
+                        deadScrolls: `${noNewUrlsCount}/${maxNoNewScrolls}`,
+                    },
+                    `[heartbeat] Scroll #${scrollCount}: found=${urlsFound}, filtered=${filteredThisScroll}, unique=${targetSet.size - before}, total=${targetSet.size}, height=${scrollHeight} — dead scrolls: ${noNewUrlsCount}/${maxNoNewScrolls}`,
+                );
                 lastLogTime = Date.now();
             }
 
