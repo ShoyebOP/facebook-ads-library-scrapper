@@ -190,8 +190,10 @@ Plans:
 **Goal:** Add detailed diagnostic logging to help debug scraper behavior — per-scroll metrics (scroll height, URLs found, filtered count, running total), URL filtering breakdown, and a full stopping reason diagnostic snapshot
 **Requirements**: ERROR-01
 **Depends on:** Phase 8
-**Plans:** 1/1 plans complete
+**Plans:** 3/3 plans complete
 
 Plans:
 
 - [x] 08.1-01-PLAN.md — Per-scroll metrics, filtered URL counts, stopping reason diagnostic
+- [ ] 08.1-02-PLAN.md — Gap closure: fix scrollHeight, found, unique metric calculations
+- [ ] 08.1-03-PLAN.md — Gap closure: heartbeat per-beat detail, final summary on all exit paths
