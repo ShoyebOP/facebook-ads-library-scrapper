@@ -359,22 +359,22 @@ describe('daemon.ts', () => {
 
 **If this table is empty:** All claims in this research were verified or cited — no user confirmation needed.
 
-## Open Questions
+## Open Questions (RESOLVED)
 
-1. **Should daemon-actions.ts be a separate npm script or just a file?**
+1. **RESOLVED: Should daemon-actions.ts be a separate npm script or just a file?**
    - What we know: CONTEXT.md decision D-02 suggests adding npm script `"daemon-actions": "bun run src/daemon-actions.ts"`
    - What's unclear: Whether to also add to bin field in package.json for global installation
-   - Recommendation: Follow CONTEXT.md D-02 - add as npm script only
+   - Resolution: Follow CONTEXT.md D-02 - add as npm script only
 
-2. **Should stop action force-kill after timeout?**
+2. **RESOLVED: Should stop action force-kill after timeout?**
    - What we know: CONTEXT.md decision D-10 says "warn user but don't force-kill"
    - What's unclear: Whether to add --force flag as an optional enhancement
-   - Recommendation: Implement as per D-10 (warn only), add --force flag as future enhancement if needed
+   - Resolution: Implement as per D-10 (warn only), add --force flag as future enhancement if needed
 
-3. **Should log file path be configurable?**
+3. **RESOLVED: Should log file path be configurable?**
    - What we know: Currently hardcoded as LOG_FILE constant
    - What's unclear: Whether different daemon instances need different log paths
-   - Recommendation: Keep hardcoded for now, can be made configurable in future phase
+   - Resolution: Keep hardcoded for now, can be made configurable in future phase
 
 ## Validation Architecture
 

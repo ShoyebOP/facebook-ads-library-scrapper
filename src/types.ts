@@ -3,6 +3,15 @@
 import type { Browser } from 'playwright-core';
 import type { Logger } from 'pino';
 
+// --- Scraper result (per-scroll metrics, stopping reason) ---
+
+export interface ScraperResult {
+    urls: Set<string>;
+    reason: string;
+    scrollCount: number;
+    maxUrls: number;
+}
+
 // --- Browser options ---
 
 export interface BrowserOptions {

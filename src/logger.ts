@@ -13,6 +13,7 @@ export function createLogger(level: string = 'info'): pino.Logger {
     const baseOptions = {
         level: logLevel,
         redact: ['proxy', '*.proxy'],
+        timestamp: false,
     };
 
     if (logFile) {
@@ -22,9 +23,9 @@ export function createLogger(level: string = 'info'): pino.Logger {
         }, pinoPretty({
             colorize: false,
             levelFirst: true,
-            ignore: 'pid,hostname',
+            ignore: 'pid,hostname,module',
             translateTime: false,
-            messageFormat: '{levelLabel} [{module}]: {msg}',
+            messageFormat: '[{module}]: {msg}',
             destination: logFile,
             append: true,
             mkdir: true,
@@ -37,9 +38,9 @@ export function createLogger(level: string = 'info'): pino.Logger {
     }, pinoPretty({
         colorize: true,
         levelFirst: true,
-        ignore: 'pid,hostname',
+        ignore: 'pid,hostname,module',
         translateTime: false,
-        messageFormat: '{levelLabel} [{module}]: {msg}',
+        messageFormat: '[{module}]: {msg}',
     }));
 }
 

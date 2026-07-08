@@ -21,7 +21,6 @@ const mockResolvePreset = mock((config: any, presetName: string) => {
 
 const mockLaunchBrowser = mock(() => Promise.resolve());
 const mockRunScraper = mock(() => Promise.resolve(new Set<string>()));
-const mockSaveOutput = mock(() => {});
 
 // Mock the config module
 mock.module('../../src/config.js', () => ({
@@ -40,8 +39,16 @@ mock.module('../../src/scraper.js', () => ({
 }));
 
 // Mock the output module
+const mockGenerateOutputPath = mock(() => '/tmp/cli-test-output/test.json');
+const mockEnsureOutputDir = mock(() => Promise.resolve());
+const mockSaveUrlsToFile = mock(() => {});
+const mockCreateIncrementalSaver = mock(() => () => {});
+
 mock.module('../../src/output.js', () => ({
-    saveOutput: mockSaveOutput,
+    generateOutputPath: mockGenerateOutputPath,
+    ensureOutputDir: mockEnsureOutputDir,
+    saveUrlsToFile: mockSaveUrlsToFile,
+    createIncrementalSaver: mockCreateIncrementalSaver,
 }));
 
 // --- Mock process.exit to prevent test termination ---
@@ -81,7 +88,10 @@ describe('CLI argument parsing', () => {
         mockResolvePreset.mockClear();
         mockLaunchBrowser.mockClear();
         mockRunScraper.mockClear();
-        mockSaveOutput.mockClear();
+        mockGenerateOutputPath.mockClear();
+        mockEnsureOutputDir.mockClear();
+        mockSaveUrlsToFile.mockClear();
+        mockCreateIncrementalSaver.mockClear();
     });
 
     it('should parse --query correctly', async () => {
@@ -157,7 +167,10 @@ describe('Pipeline integration', () => {
         mockResolvePreset.mockClear();
         mockLaunchBrowser.mockClear();
         mockRunScraper.mockClear();
-        mockSaveOutput.mockClear();
+        mockGenerateOutputPath.mockClear();
+        mockEnsureOutputDir.mockClear();
+        mockSaveUrlsToFile.mockClear();
+        mockCreateIncrementalSaver.mockClear();
     });
 
     it('should call loadConfig with valid args', async () => {
