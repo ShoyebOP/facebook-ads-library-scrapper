@@ -10,6 +10,7 @@ export interface ScraperResult {
     reason: string;
     scrollCount: number;
     maxUrls: number;
+    filteredCount: number;
 }
 
 // --- Browser options ---

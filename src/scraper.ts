@@ -138,13 +138,13 @@ export async function runScraper(
             // Per-scroll metrics
             let scrollHeight = 0;
             try {
-                scrollHeight = await page.evaluate(() => window.scrollY);
+                scrollHeight = await page.evaluate(() => document.body.scrollHeight);
             } catch {
                 scrollHeight = 0;
             }
-            const urlsFound = targetSet.size - before;
             const currentFiltered = getFilteredCount();
             const filteredThisScroll = currentFiltered - previousFiltered;
+            const urlsFound = (targetSet.size - before) + filteredThisScroll;
             const runningTotal = targetSet.size;
             previousFiltered = currentFiltered;
 
@@ -155,7 +155,7 @@ export async function runScraper(
                     filteredCount: filteredThisScroll,
                     runningTotal,
                 },
-                `Found: ${urlsFound}, Filtered: ${filteredThisScroll} (dups), Unique: ${runningTotal}, Total: ${runningTotal}`,
+                `Found: ${urlsFound}, Filtered: ${filteredThisScroll} (dups), Unique: ${targetSet.size - before}, Total: ${runningTotal}`,
             );
 
             if (targetSet.size === before) {
@@ -178,7 +178,7 @@ export async function runScraper(
         }
 
         const reason = targetSet.size >= maxUrls ? 'max-urls reached' : 'no-new-ads';
-        return { urls: targetSet, reason, scrollCount, maxUrls: maxUrls ?? Infinity };
+        return { urls: targetSet, reason, scrollCount, maxUrls: maxUrls ?? Infinity, filteredCount: getFilteredCount() };
     } finally {
         // D-04: always close browser
         if (browser) {
